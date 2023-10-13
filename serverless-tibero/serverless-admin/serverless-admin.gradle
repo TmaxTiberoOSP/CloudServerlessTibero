@@ -1,0 +1,46 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+def TB_HOME = System.getenv("TB_HOME")
+
+description = 'Serverless Tibero Admin Command-line interface'
+version '1.0'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.tmax.serverless.admin.Main'
+        attributes 'Specification-Title': 'Serverless Tibero Admin'
+        attributes 'Specification-Version': "${project.version}"
+        attributes 'Multi-Release': true
+    }
+}
+
+dependencies {
+    implementation project(':serverless-core')
+
+    /* CLI */
+    implementation 'info.picocli:picocli:4.7.3'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.3'
+
+    implementation 'commons-validator:commons-validator:1.7'
+
+    implementation 'org.jetbrains:annotations:24.0.1'
+}
+
+compileJava {
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+}
+
+releaseServerless.dependsOn = ['release']
+
+shadowJar {
+    archiveClassifier.set("runnable")
+}
+
+task release(type: Copy, dependsOn: ['jar', 'shadowJar']) {
+    description "release ${it.project.name}"
+    println description
+    from 'build/libs'
+    into "${TB_HOME}/bin/jar/serverless/admin"
+}

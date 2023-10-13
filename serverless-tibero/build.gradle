@@ -1,0 +1,46 @@
+def slf4jVersion = '1.7.32'
+def log4jVersion = '2.16.0'
+
+allprojects {
+    task releaseServerless() {}
+}
+
+subprojects {
+    apply plugin: 'java'
+    group = 'com.tmax.serverless'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        /* Netty Framework */
+        implementation group: 'io.netty', name: 'netty-all', version: '4.1.86.Final'
+
+        /* Gson */
+        implementation 'com.google.code.gson:gson:2.9.0'
+
+        /* Lombok */
+        annotationProcessor 'org.projectlombok:lombok:1.18.26'
+        compileOnly 'org.projectlombok:lombok:1.18.26'
+
+        /* Yaml */
+        implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
+
+        /* Logger */
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
+        implementation group: 'org.slf4j', name: 'log4j-over-slf4j', version: "${slf4jVersion}"
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: "${log4jVersion}"
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: "${log4jVersion}"
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "${log4jVersion}"
+
+        /* Test */
+        testImplementation(platform('org.junit:junit-bom:5.9.3'))
+        testImplementation('org.junit.jupiter:junit-jupiter')
+    }
+}

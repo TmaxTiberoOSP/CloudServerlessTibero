@@ -1,0 +1,9 @@
+rootProject.name = 'serverless-tibero'
+include 'serverless-admin'
+include 'serverless-core'
+include 'serverless-manager'
+
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+}
+
