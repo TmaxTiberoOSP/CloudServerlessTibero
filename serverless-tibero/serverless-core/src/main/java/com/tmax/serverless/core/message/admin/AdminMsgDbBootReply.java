@@ -5,6 +5,7 @@ import static com.tmax.serverless.core.message.AdminMsgType.ADMIN_MSG_DB_BOOT_RE
 import com.tmax.serverless.core.annotation.ServerlessMessage;
 import com.tmax.serverless.core.message.JsonMessage;
 import com.tmax.serverless.core.message.RegularMessage;
+import com.tmax.serverless.core.message.ReturnCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -24,14 +25,4 @@ public class AdminMsgDbBootReply extends JsonMessage {
     this.returnCode = returnCode;
   }
 
-  public enum ReturnCode {
-    SUCCESS(0),
-    FAIL(1);
-
-    final int value;
-
-    ReturnCode(int value) {
-      this.value = value;
-    }
-  }
 }

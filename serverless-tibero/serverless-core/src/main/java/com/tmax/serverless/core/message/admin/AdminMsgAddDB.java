@@ -10,8 +10,10 @@ import com.tmax.serverless.core.message.RegularMessage;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+@Getter
 @ServerlessMessage(ADMIN_MSG_ADD_DB)
 public class AdminMsgAddDB extends JsonMessage {
 
