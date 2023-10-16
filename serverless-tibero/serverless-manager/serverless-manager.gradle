@@ -7,6 +7,15 @@ def TB_HOME = System.getenv("TB_HOME")
 description = 'Serverless Tibero Manager'
 version = '1.0'
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.tmax.serverless.manager.Main'
+        attributes 'Specification-Title': 'Serverless Tibero Manager'
+        attributes 'Specification-Version': "${project.version}"
+        attributes 'Multi-Release': true
+    }
+}
+
 dependencies {
     implementation project(':serverless-core')
 
