@@ -57,4 +57,53 @@ public class PoolManagementService {
 
       return true;
     }
+
+    public boolean scaleOutDB() {
+      Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
+      Map.Entry<String, DBInstance> dbInstanceEntry;
+      boolean result = false;
+      if (pool.isEmpty())
+        return false;
+
+      dbInstanceEntry = pool.entrySet().iterator().next();
+      /*
+       load balance 등록 등 일련의 절차
+       */
+
+      /* 만약 아래의 작업이 실패하면, Load balancer에 등록된 것도 삭제해주어야 함
+      * 물론 throw 처리할수도 있음
+      * */
+      result = moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active);
+
+      if (!result) {
+        /* load balacer에서 삭제 */
+      }
+
+      return result;
+    }
+
+    /* 특정 alias를 주느냐 아니냐에 따라 구현이 다름 */
+    public boolean scaleInDB() {
+      Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
+      Map.Entry<String, DBInstance> dbInstanceEntry;
+
+      if (pool.isEmpty())
+        return false;
+
+      dbInstanceEntry = pool.entrySet().iterator().next();
+      return moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
+    }
+
+  public boolean scaleInDB(String alias) {
+    Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
+
+    if (!pool.containsKey(alias))
+      return false;
+
+    /*
+    load balancer에서 삭제하는등의 일련의 작업
+    */
+
+    return moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
+  }
 }
