@@ -12,6 +12,18 @@ dependencies {
 
 }
 
+configurations {
+    externalLib.extendsFrom(implementation)
+}
+
+task copyExternalLib(type: Copy) {
+    description "copy External Library into ${TB_HOME}/bin/jar/serverless/external"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from configurations.externalLib {
+        into "${TB_HOME}/bin/jar/serverless/external"
+    }
+}
+
 releaseServerless.dependsOn = ['release']
 
 shadowJar {
@@ -22,7 +34,7 @@ shadowJar {
     }
 }
 
-task release(type: Copy, dependsOn: ['shadowJar']) {
+task release(type: Copy, dependsOn: ['shadowJar', 'copyExternalLib']) {
     description "release ${it.project.name}"
     println description
     from 'build/libs'
