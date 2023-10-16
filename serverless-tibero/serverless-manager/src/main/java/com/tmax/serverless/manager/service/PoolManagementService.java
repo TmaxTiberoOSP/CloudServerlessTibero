@@ -97,8 +97,6 @@ public class PoolManagementService {
   public boolean scaleInDB(String alias) {
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
-    if (pool.isEmpty())
-      return false;
     if (!pool.containsKey(alias))
       return false;
 
