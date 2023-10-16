@@ -26,10 +26,10 @@ configurations {
 }
 
 task copyExternalLib(type: Copy) {
-    description "copy External Library into ${TB_HOME}/bin/jar/serverless/external"
+    description "copy External Library into ${TB_HOME}/bin/jar/serverless/lib"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from configurations.externalLib {
-        into "${TB_HOME}/bin/jar/serverless/external"
+        into "${TB_HOME}/bin/jar/serverless/lib"
     }
 }
 
