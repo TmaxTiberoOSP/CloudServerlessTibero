@@ -47,7 +47,7 @@ task release(type: Copy, dependsOn: ['shadowJar', 'copyExternalLib']) {
     description "release ${it.project.name}"
     println description
     from 'build/libs'
-    into "${TB_HOME}/bin/jar/serverless"
+    into "${TB_HOME}/bin/jar/serverless/manager"
 }
 
 
