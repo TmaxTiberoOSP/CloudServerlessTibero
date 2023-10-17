@@ -11,9 +11,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
+@ToString
 @ServerlessMessage(ADMIN_MSG_ADD_DB)
 public class AdminMsgAddDB extends JsonMessage {
 
