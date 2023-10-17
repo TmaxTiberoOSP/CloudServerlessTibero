@@ -37,17 +37,18 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
 
   @Override
   public String getServiceName() {
-    return "";
+    return getClass().toString();
   }
 
   @Override
   public Integer call() {
     log.info("{}", this);
-
-    return send(AdminMsgAddDB.builder()
+    AdminMsgAddDB req = AdminMsgAddDB.builder()
         .alias(alias)
         .mode(mode)
-        .build(),
+        .build();
+    log.info("req msg: " + req);
+    return send(req,
         (ctx, res) -> {
           log.info("{}", res);
           printResult(res, String.format("add DB(%s) on %s mode",
