@@ -22,6 +22,7 @@ public class PropertyContainer {
   private final Map<String, Object> propMap;
 
   public PropertyContainer() {
+    log.info("creating PropertyContainer!");
     LoaderOptions loaderOptions = new LoaderOptions();
     loaderOptions.setAllowDuplicateKeys(false);
 

@@ -47,7 +47,10 @@ public class MainContainer {
     private static final MainContainer container;
 
     static {
+      log.info("MainContainer init!");
       container = new MainContainer();
+      log.info("after creating MainContainer!");
+      log.info("gson of MainContainer: {}", container.gson);
       container.beanContainer.init();
     }
   }

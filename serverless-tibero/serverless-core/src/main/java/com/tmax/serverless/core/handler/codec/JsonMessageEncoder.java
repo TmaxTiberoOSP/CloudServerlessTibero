@@ -15,13 +15,15 @@ public class JsonMessageEncoder extends MessageToByteEncoder<JsonMessage> {
     if (log.isDebugEnabled()) {
       log.debug("{}", msg);
     }
-
+    log.info("encode1: " + msg);
+    log.info("encode1-1: " + MainContainer.getGson());
     String json = MainContainer.getGson().toJson(msg);
-
+    log.info("encode2: " + json);
     out.writeIntLE(msg.getMsgMagicNumber());
     out.writeIntLE(msg.getMsgFlag());
     out.writeIntLE(msg.getMsgType());
     out.writeIntLE(json.length());
     out.writeBytes(json.getBytes());
+    log.info("encode3");
   }
 }

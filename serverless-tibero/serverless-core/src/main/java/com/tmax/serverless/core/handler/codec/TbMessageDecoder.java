@@ -15,6 +15,7 @@ public class TbMessageDecoder extends ByteToMessageDecoder {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    log.info("decode1");
     int readableBytes = in.readableBytes();
     if (log.isDebugEnabled()) {
       log.debug("readableBytes: {}", readableBytes);
@@ -36,20 +37,20 @@ public class TbMessageDecoder extends ByteToMessageDecoder {
 
     Constructor<?> messageConstructor = MainContainer.getServiceContainer()
         .getMessageConstructor(regular.getMsgType());
-
+    log.info("decode2: " + messageConstructor);
     if (messageConstructor == null) {
       log.error("uninterpretable message");
       return;
     }
 
     Object msg = messageConstructor.newInstance(regular);
-
+    log.info("decode3: " + msg);
     if (msg instanceof JsonMessage) {
       ((JsonMessage) msg).deserialize(msg.getClass());
     } else {
       throw new RuntimeException("Invalid Message Type!");
     }
-
+    log.info("decode4: " + msg);
     out.add(msg);
 
     if (log.isDebugEnabled()) {

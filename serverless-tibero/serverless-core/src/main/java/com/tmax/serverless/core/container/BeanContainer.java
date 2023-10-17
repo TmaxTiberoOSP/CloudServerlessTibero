@@ -37,6 +37,7 @@ public class BeanContainer {
   }
 
   public void init() {
+    log.info("BeanContainer init!");
     reflections.get(TypesAnnotated.getAllIncluding(Component.class.getName()).asClass()).stream()
         .filter(clazz -> !clazz.isAnnotation())
         .map(clazz -> {

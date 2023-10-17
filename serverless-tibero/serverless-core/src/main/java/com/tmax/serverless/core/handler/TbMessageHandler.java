@@ -18,7 +18,7 @@ public class TbMessageHandler extends ChannelInboundHandlerAdapter {
     ServiceContainer serviceContainer = MainContainer.getServiceContainer();
     BeanContainer beanContainer = MainContainer.getBeanContainer();
     RegularMessage req = (RegularMessage) msg;
-
+    log.info("TbMessageHadnler1");
     if (log.isDebugEnabled()) {
       log.debug("| Manager | <- | Admin |: {}", req);
     }
@@ -28,13 +28,13 @@ public class TbMessageHandler extends ChannelInboundHandlerAdapter {
       log.error("Mapped service does not exist: {}", req.getMsgType());
       return;
     }
-
+    log.info("TbMessageHadnler2");
     Object controller = beanContainer.get(service.getDeclaringClass().getName());
     if (controller == null) {
       log.error("Mapped controller does not exist: {}", req.getMsgType());
       return;
     }
-
+    log.info("TbMessageHadnler3");
     Object res = service.invoke(controller, ctx, req);
     if (res != null) {
       ctx.writeAndFlush(res);
