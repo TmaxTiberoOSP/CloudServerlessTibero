@@ -2,6 +2,7 @@ package com.tmax.serverless.manager;
 
 import com.tmax.serverless.core.annotation.Component;
 import com.tmax.serverless.core.annotation.Value;
+import com.tmax.serverless.core.handler.TbMessageHandler;
 import com.tmax.serverless.core.handler.codec.JsonMessageEncoder;
 import com.tmax.serverless.core.handler.codec.TbMessageDecoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -40,9 +41,8 @@ public class ServerlessManager {
             ch.pipeline()
                 .addLast(
                     new TbMessageDecoder(),
-                    new JsonMessageEncoder()
-                );
-
+                    new JsonMessageEncoder())
+                .addLast(TbMessageHandler.class.getName(), new TbMessageHandler());
           }
         }));
 
