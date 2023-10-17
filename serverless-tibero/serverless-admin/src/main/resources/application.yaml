@@ -1,0 +1,4 @@
+serverless:
+  manager:
+    host: ${LOCAL_IP:-localhost}
+    port: ${LOCAL_PORT:-2424}
