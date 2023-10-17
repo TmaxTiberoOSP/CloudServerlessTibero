@@ -15,10 +15,9 @@ public abstract class CallbackHandler<T> extends ChannelDuplexHandler {
   private final Class<?> targetMessage;
   private boolean isTarget = false;
 
-  public CallbackHandler(String callbackHandlerName) {
+  public CallbackHandler(Class<?> clazz, String callbackHandlerName) {
     this.callbackHandlerName = callbackHandlerName;
-    this.targetMessage = ((Class<?>) ((ParameterizedType) getClass()
-        .getGenericSuperclass()).getActualTypeArguments()[0]);
+    this.targetMessage = clazz;
   }
 
   private static void add(ChannelPipeline pipe, CallbackHandler<?> callback) {

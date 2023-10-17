@@ -9,6 +9,7 @@ import com.tmax.serverless.admin.utils.ConsoleColors;
 import com.tmax.serverless.core.handler.Callback;
 import com.tmax.serverless.core.handler.CallbackHandler;
 import com.tmax.serverless.core.message.JsonMessage;
+import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import java.lang.reflect.ParameterizedType;
@@ -45,6 +46,7 @@ public abstract class CallableSubCommand<T extends JsonMessage> implements Calla
 
     CallbackHandler.add(ch,
         new CallbackHandler<T>(
+            responseMessageClass,
             getServiceName()
         ) {
           @Override
@@ -66,7 +68,9 @@ public abstract class CallableSubCommand<T extends JsonMessage> implements Calla
           }
         });
 
+    log.info("request: {}", request);
     ch.writeAndFlush(request);
+    log.info("after sending request!");
 
     try {
       return promise.get(timeoutSec, TimeUnit.SECONDS);
@@ -80,6 +84,7 @@ public abstract class CallableSubCommand<T extends JsonMessage> implements Calla
   }
 
   public Integer send(JsonMessage request, Callback<T> callback) {
+    log.info("send0 {}", request);
     return send(request, 30, callback);
   }
 
