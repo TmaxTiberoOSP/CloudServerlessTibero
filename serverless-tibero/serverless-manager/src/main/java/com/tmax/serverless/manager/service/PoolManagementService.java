@@ -18,7 +18,7 @@ public class PoolManagementService {
   /* 완전히 새로운 DB를 Pool에 추가*/
   public boolean addDBtoInstancePool(String alias, DBServerlessMode mode) {
       Map<String, DBInstance> pool;
-      if (!dbInstancePool.isExistInDBPool(alias))
+      if (dbInstancePool.isExistInDBPool(alias))
         return false;
       DBInstance newDBInstance = new DBInstance(alias, mode);
 
