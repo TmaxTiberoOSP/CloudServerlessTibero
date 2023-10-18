@@ -50,7 +50,7 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
     log.info("req msg: " + req);
     return send(req,
         (ctx, res) -> {
-          log.info("{}", res);
+          log.info("AddDBCommand result: {}", res);
           printResult(res, String.format("add DB(%s) on %s mode",
               ConsoleColors.set(alias, Styles.BOLD),
               mode.toString()));

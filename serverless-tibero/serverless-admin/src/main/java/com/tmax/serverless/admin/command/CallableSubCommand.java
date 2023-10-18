@@ -10,6 +10,7 @@ import com.tmax.serverless.core.handler.Callback;
 import com.tmax.serverless.core.handler.CallbackHandler;
 import com.tmax.serverless.core.message.JsonMessage;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
+import com.tmax.serverless.core.message.admin.AdminMsgReply;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import java.lang.reflect.ParameterizedType;
@@ -51,13 +52,13 @@ public abstract class CallableSubCommand<T extends JsonMessage> implements Calla
         ) {
           @Override
           public boolean callback(ChannelHandlerContext ctx, Object message) {
-            String responseResult = ((JsonMessage) message).getResult().toString();
+            String responseResult = ((AdminMsgReply) message).getResult().toString();
             if (log.isDebugEnabled()) {
               log.info("{}", responseResult);
             }
 
             if (responseResult != null) {
-              callback.run(ctx, (JsonMessage)message);
+              callback.run(ctx, (AdminMsgReply) message);
               promise.complete(0);
             } else {
               log.error("Unknown message: {}", message);
@@ -88,14 +89,14 @@ public abstract class CallableSubCommand<T extends JsonMessage> implements Calla
     return send(request, 30, callback);
   }
 
-  public void printSuccess(JsonMessage res, String message) {
+  public void printSuccess(AdminMsgReply res, String message) {
     System.out.println((res.isSuccess()
         ? ConsoleColors.set("SUCCESS", BOLD, GREEN)
         : ConsoleColors.set("FAIL", BOLD, RED)) +
         " - " + message);
   }
 
-  public void printResult(JsonMessage res, String message) {
+  public void printResult(AdminMsgReply res, String message) {
     printSuccess(res, message);
     if (!res.isSuccess()) {
 //      System.err.println("code: " + res.getErrorCode());
