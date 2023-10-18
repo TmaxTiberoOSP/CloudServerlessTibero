@@ -7,7 +7,9 @@ import com.tmax.serverless.manager.context.DBInstance;
 import com.tmax.serverless.manager.context.DBInstancePool;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class PoolManagementService {
   @Autowired
@@ -24,6 +26,7 @@ public class PoolManagementService {
         case Active:
           pool = dbInstancePool.getActiveDBPool();
           pool.put(alias, newDBInstance);
+          log.info("ActivePool:" + pool);
           return true;
         case WarmUp:
           pool = dbInstancePool.getWarmUpDBPool();
