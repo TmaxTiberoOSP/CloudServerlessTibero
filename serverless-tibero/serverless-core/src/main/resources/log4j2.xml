@@ -24,7 +24,7 @@
 
   <!-- 콘솔, 파일에 찍을 때 형식 및 설정 셋팅-->
   <Loggers>
-    <Root additivity="false" level="info">
+    <Root additivity="false" level="all">
       <AppenderRef ref="serverless"/>
     </Root>
 
