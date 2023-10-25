@@ -64,7 +64,7 @@ public class PoolManagementService {
     public boolean scaleOutDB() {
       Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
       Map.Entry<String, DBInstance> dbInstanceEntry;
-      boolean result = false;
+      boolean result=false;
       if (pool.isEmpty())
         return false;
 
@@ -109,4 +109,17 @@ public class PoolManagementService {
 
     return moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
   }
+
+  public boolean makeDBWarmUp(String alias) {
+    Map<String, DBInstance> pool = dbInstancePool.getActiveColdDBPool();
+
+    if (!pool.containsKey(alias))
+      return false;
+
+    /* DB Warmup으로 변경 */
+
+    return moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp);
+  }
 }
+
+
