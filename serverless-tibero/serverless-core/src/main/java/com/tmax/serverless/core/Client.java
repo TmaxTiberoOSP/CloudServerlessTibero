@@ -1,6 +1,7 @@
-package com.tmax.serverless.admin;
+package com.tmax.serverless.core;
 
 import com.tmax.serverless.core.handler.ConnectionObservable;
+import com.tmax.serverless.core.handler.WebSocketClientHandler;
 import com.tmax.serverless.core.handler.codec.JsonMessageEncoder;
 import com.tmax.serverless.core.handler.codec.TbMessageDecoder;
 import io.netty.bootstrap.Bootstrap;
@@ -10,8 +11,17 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
+import io.netty.handler.codec.http.websocketx.WebSocketVersion;
+import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
+import io.netty.util.AttributeKey;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -118,9 +128,14 @@ public class Client implements PropertyChangeListener {
     }
   }
 
+  public WebSocketClientHandler getWebSocketHandler() {
+    return future.channel().attr(ClientBuilder.WS_HANDLER).get();
+  }
 
   @SuppressWarnings("unused")
   public static class ClientBuilder {
+    private static final AttributeKey<WebSocketClientHandler> WS_HANDLER = AttributeKey.valueOf(
+        "WS_HANDLER");
 
     public Client adminBuild() {
       Client client = init();
@@ -143,6 +158,38 @@ public class Client implements PropertyChangeListener {
           });
 
       return client;
+    }
+
+    public Client sysMasterBuild() throws URISyntaxException {
+      Client client = init();
+
+      URI uri = new URI("ws://" + client.host + ":" + client.port);
+
+      final WebSocketClientHandler handler =
+          new WebSocketClientHandler(
+              WebSocketClientHandshakerFactory.newHandshaker(
+                  uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+
+      client.eventLoop = new NioEventLoopGroup(client.nThreads);
+      client.bootstrap = new Bootstrap()
+          .group(client.eventLoop)
+          .remoteAddress(client.host, client.port)
+          .channel(NioSocketChannel.class)
+          .handler(new ChannelInitializer<>() {
+            @Override
+            protected void initChannel(@NotNull Channel ch) {
+              ch.attr(WS_HANDLER).set(handler);
+              ch.pipeline()
+                  .addLast(
+                      new HttpClientCodec(),
+                      new HttpObjectAggregator(64 * 1024),
+                      WebSocketClientCompressionHandler.INSTANCE)
+                  .addLast(WebSocketClientHandler.class.getName(), handler);
+            }
+          });
+
+      return client;
+
     }
 
   }

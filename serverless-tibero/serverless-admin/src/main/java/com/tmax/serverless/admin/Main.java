@@ -1,6 +1,7 @@
 package com.tmax.serverless.admin;
 
 import com.tmax.serverless.admin.command.MainCommand;
+import com.tmax.serverless.core.Client;
 import picocli.CommandLine;
 
 public class Main {

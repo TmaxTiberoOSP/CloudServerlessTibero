@@ -2,3 +2,7 @@ serverless:
   manager:
     host: ${LOCAL_IP:-localhost}
     port: ${LOCAL_PORT:-2424}
+  sysmaster:
+    host: ${SYSMASTER_IP:-localhost}
+    port: ${SYSMASTER_PORT:-2525}
+

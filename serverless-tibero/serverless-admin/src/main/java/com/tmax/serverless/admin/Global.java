@@ -1,5 +1,6 @@
 package com.tmax.serverless.admin;
 
+import com.tmax.serverless.core.Client;
 import lombok.Getter;
 import lombok.Setter;
 
