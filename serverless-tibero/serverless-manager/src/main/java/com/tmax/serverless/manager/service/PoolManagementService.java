@@ -111,7 +111,12 @@ public class PoolManagementService {
       return false;
 
     /*
-    load balancer에서 삭제하는등의 일련의 작업
+      붙을 pod name Parsing
+    */
+
+    /*
+    kubectl label pod [pod 이름] -n [namespace 이름] [key]=[value] --overwrite
+    ex) kubectl label pod zeta-4-69cf67b8c-t65xr -n tibero app=zeta-db --overwrite
     */
 
     return moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
@@ -123,10 +128,10 @@ public class PoolManagementService {
     if (!pool.containsKey(alias))
       return false;
 
-    /* DB Warmup으로 변경 */
+    /*
+      kubectl exec -it zeta-0-84bb86bb4c-q95pt -n tibero -- /bin/bash -c "export TB_HOME=/tibero;export TB_SID=tac0;tbdown"
+    */
 
     return moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp);
   }
 }
-
-
