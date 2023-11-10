@@ -32,6 +32,8 @@ subprojects {
         /* Yaml */
         implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
+        implementation 'commons-cli:commons-cli:1.6.0'
+
         /* Logger */
         implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
         implementation group: 'org.slf4j', name: 'log4j-over-slf4j', version: "${slf4jVersion}"

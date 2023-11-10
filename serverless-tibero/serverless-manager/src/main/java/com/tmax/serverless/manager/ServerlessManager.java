@@ -1,12 +1,14 @@
 package com.tmax.serverless.manager;
 
 import com.tmax.serverless.core.Client;
+import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Component;
 import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.core.handler.TbMessageHandler;
 import com.tmax.serverless.core.handler.WebSocketClientHandler;
 import com.tmax.serverless.core.handler.codec.JsonMessageEncoder;
 import com.tmax.serverless.core.handler.codec.TbMessageDecoder;
+import com.tmax.serverless.manager.service.KubernetesManagementService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -18,6 +20,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
+
+import io.kubernetes.client.openapi.ApiException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +43,15 @@ public class ServerlessManager {
   private int sysMasterPort;
   private Client client;
 
+  @Autowired
+  KubernetesManagementService kubernetesManagementService;
+
   public void init() {
 
   }
 
-  public void run() throws InterruptedException, URISyntaxException {
+  public void run() throws InterruptedException, URISyntaxException, IOException, ApiException, InterruptedException {
+    kubernetesManagementService.init();
     ServerBootstrap serverBootstrap = new ServerBootstrap()
         .group(listenerGroup, workerGroup)
         // TODO: EpollServerSocketChannel(Linux only) 사용 논의 필요
