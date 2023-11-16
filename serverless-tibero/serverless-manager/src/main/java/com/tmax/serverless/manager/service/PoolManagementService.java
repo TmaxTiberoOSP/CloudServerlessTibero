@@ -3,6 +3,7 @@ package com.tmax.serverless.manager.service;
 import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Service;
 import com.tmax.serverless.core.context.DBServerlessMode;
+import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
 import com.tmax.serverless.manager.context.DBInstance;
 import com.tmax.serverless.manager.context.DBInstancePool;
 import java.util.HashMap;
@@ -16,26 +17,34 @@ public class PoolManagementService {
   DBInstancePool dbInstancePool;
 
   /* 완전히 새로운 DB를 Pool에 추가*/
-  public boolean addDBtoInstancePool(String alias, DBServerlessMode mode) {
-      Map<String, DBInstance> pool;
-      if (dbInstancePool.isExistInDBPool(alias))
-        return false;
-      DBInstance newDBInstance = new DBInstance(alias, mode);
+  public boolean addDBtoInstancePool(AdminMsgAddDB req) {
+    String dbName = req.getDbName();
+    String alias = req.getAlias();
+    String ip = req.getIp();
+    int port = req.getPort();
+    String dbUser = req.getDbUser();
+    String dbPassword = req.getDbPassword();
+    DBServerlessMode mode = req.getMode();
 
-      switch (mode) {
-        case Active:
-          pool = dbInstancePool.getActiveDBPool();
-          pool.put(alias, newDBInstance);
-          log.info("ActivePool:" + pool);
-          return true;
-        case WarmUp:
-          pool = dbInstancePool.getWarmUpDBPool();
-          pool.put(alias, newDBInstance);
-          return true;
-        default:
-          return false;
-      }
+    Map<String, DBInstance> pool;
+    if (dbInstancePool.isExistInDBPool(alias))
+      return false;
+    DBInstance newDBInstance = new DBInstance(alias, mode);
+
+    switch (mode) {
+      case Active:
+        pool = dbInstancePool.getActiveDBPool();
+        pool.put(alias, newDBInstance);
+        log.info("ActivePool:" + pool);
+        return true;
+      case WarmUp:
+        pool = dbInstancePool.getWarmUpDBPool();
+        pool.put(alias, newDBInstance);
+        return true;
+      default:
+        return false;
     }
+  }
 
     /* Pool사이에서의 DB Instance 이동 */
     public boolean moveDBtoAnotherPool(String alias, DBServerlessMode sourceMode, DBServerlessMode targetMode) {

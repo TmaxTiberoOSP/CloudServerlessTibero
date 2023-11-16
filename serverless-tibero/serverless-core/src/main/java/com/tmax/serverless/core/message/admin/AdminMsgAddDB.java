@@ -19,16 +19,27 @@ import lombok.experimental.SuperBuilder;
 @ServerlessMessage(ADMIN_MSG_ADD_DB)
 public class AdminMsgAddDB extends JsonMessage {
 
+  private String dbName;
   private String alias;
+  private String ip;
+  private int port;
+  private String dbUser;
+  private String dbPassword;
   private DBServerlessMode mode;
 
   public AdminMsgAddDB(RegularMessage header) { super(header); }
 
   @Builder
-  public AdminMsgAddDB(String alias, DBServerlessMode mode) {
+  public AdminMsgAddDB(String dbName, String alias, String ip, int port,
+      String dbUser, String dbPassword, DBServerlessMode mode) {
     super(ADMIN_MSG_ADD_DB);
 
+    this.dbName = dbName;
     this.alias = alias;
+    this.ip = ip;
+    this.port = port;
+    this.dbUser = dbUser;
+    this.dbPassword = dbPassword;
     this.mode = mode;
   }
 

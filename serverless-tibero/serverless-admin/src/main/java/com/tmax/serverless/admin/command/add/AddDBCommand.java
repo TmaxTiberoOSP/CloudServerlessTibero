@@ -21,10 +21,40 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
   private CommandSpec spec;
 
   @Option(
+      names = {"--db-name"},
+      description = "Database Name",
+      required = true)
+  private String dbName;
+
+  @Option(
       names = {"--alias"},
       description = "DB Instance alias",
       required = true)
   private String alias;
+
+  @Option(
+      names = {"--ip"},
+      description = "DB Instance ip",
+      required = true)
+  private String ip;
+
+  @Option(
+      names = {"--port"},
+      description = "DB Instance port",
+      required = true)
+  private int port;
+
+  @Option(
+      names = {"--db-user"},
+      description = "DB Instance user",
+      required = true)
+  private String dbUser;
+
+  @Option(
+      names = {"--db-pw"},
+      description = "DB Instance password",
+      required = true)
+  private String dbPassword;
 
   @Option(
       names = {"-m", "--mode"},
@@ -44,7 +74,12 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
   public Integer call() {
     log.info("{}", this);
     AdminMsgAddDB req = AdminMsgAddDB.builder()
+        .dbName(dbName)
         .alias(alias)
+        .ip(ip)
+        .port(port)
+        .dbUser(dbUser)
+        .dbPassword(dbPassword)
         .mode(mode)
         .build();
     log.info("req msg: " + req);

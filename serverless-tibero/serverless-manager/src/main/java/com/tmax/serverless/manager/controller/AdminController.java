@@ -25,7 +25,7 @@ public class AdminController {
   public AdminMsgAddDBReply addDBInstance(ChannelHandlerContext ctx, AdminMsgAddDB req) {
     log.info("{}", req);
 
-    boolean result = poolManagementService.addDBtoInstancePool(req.getAlias(), req.getMode());
+    boolean result = poolManagementService.addDBtoInstancePool(req);
 
     AdminMsgAddDBReply res = AdminMsgAddDBReply.builder()
             .returnCode(result ? SUCCESS : FAIL)
