@@ -6,6 +6,8 @@ import com.tmax.serverless.core.context.DBServerlessMode;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
 import com.tmax.serverless.manager.context.DBInstance;
 import com.tmax.serverless.manager.context.DBInstancePool;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class PoolManagementService {
   @Autowired
+  KubernetesManagementService kubernetesManagementService;
+
+  @Autowired
   DBInstancePool dbInstancePool;
+
+  public void init() {
+    /*
+    최초에 Kubernetes API를 통해 pod name 한번 쫙 읽어서
+    dbInstancePool 구축
+    */
+  }
 
   /* 완전히 새로운 DB를 Pool에 추가*/
   public boolean addDBtoInstancePool(AdminMsgAddDB req) {
@@ -70,7 +82,7 @@ public class PoolManagementService {
       return true;
     }
 
-    public boolean scaleOutDB() {
+    public boolean scaleOutDB(String alias) throws IOException {
       Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
       Map.Entry<String, DBInstance> dbInstanceEntry;
       boolean result=false;
@@ -86,22 +98,22 @@ public class PoolManagementService {
        이를 위해 위의 yaml을 parsing하여 특정할 라벨링을 수정하는 메서드가 필요하다.
        pod에 대한 접근은 다음과 같은 형식으로 가능하다.
        kubectl edit pod pod이름 -n 네임스페이스 이름
-
       */
-
+      kubernetesManagementService.addDBtoLB(alias);
       /* 만약 아래의 작업이 실패하면, Load balancer에 등록된 것도 삭제해주어야 함
       * 물론 throw 처리할수도 있음
       * */
       result = moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active);
 
       if (!result) {
-        /* load balacer에서 삭제 */
+        kubernetesManagementService.removeDBfromLB(alias);
       }
 
       return result;
     }
 
     /* 특정 alias를 주느냐 아니냐에 따라 구현이 다름 */
+    /*
     public boolean scaleInDB() {
       Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
       Map.Entry<String, DBInstance> dbInstanceEntry;
@@ -112,8 +124,8 @@ public class PoolManagementService {
       dbInstanceEntry = pool.entrySet().iterator().next();
       return moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
     }
-
-  public boolean scaleInDB(String alias) {
+  */
+  public boolean scaleInDB(String alias) throws IOException {
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
     if (!pool.containsKey(alias))
@@ -122,7 +134,7 @@ public class PoolManagementService {
     /*
       붙을 pod name Parsing
     */
-
+    kubernetesManagementService.removeDBfromLB(alias);
     /*
     kubectl label pod [pod 이름] -n [namespace 이름] [key]=[value] --overwrite
     ex) kubectl label pod zeta-4-69cf67b8c-t65xr -n tibero app=zeta-db --overwrite
@@ -131,7 +143,7 @@ public class PoolManagementService {
     return moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
   }
 
-  public boolean makeDBWarmUp(String alias) {
+  public boolean makeDBWarmUp(String alias) throws IOException {
     Map<String, DBInstance> pool = dbInstancePool.getActiveColdDBPool();
 
     if (!pool.containsKey(alias))
@@ -140,6 +152,7 @@ public class PoolManagementService {
     /*
       kubectl exec -it zeta-0-84bb86bb4c-q95pt -n tibero -- /bin/bash -c "export TB_HOME=/tibero;export TB_SID=tac0;tbdown"
     */
+    kubernetesManagementService.executeDBCommand(alias, "tbdown");
 
     return moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp);
   }
