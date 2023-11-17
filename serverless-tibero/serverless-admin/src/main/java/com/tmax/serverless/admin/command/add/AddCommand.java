@@ -5,11 +5,12 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "add",
-    synopsisSubcommandLabel = "(Active | Warm-Up)",
+    synopsisSubcommandLabel = "(DB | Group)",
     subcommands = {
-        AddDBCommand.class
+        AddDBCommand.class,
+        AddGroupCommand.class
     },
-    description = "add Active DB or Warm-Up DB\n"
+    description = "add DB or Group\n"
 )
 public class AddCommand extends SuperCommand {
 

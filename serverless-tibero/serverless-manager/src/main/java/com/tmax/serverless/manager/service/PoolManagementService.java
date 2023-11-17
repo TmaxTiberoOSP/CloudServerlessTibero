@@ -58,59 +58,61 @@ public class PoolManagementService {
     }
   }
 
-    /* Pool사이에서의 DB Instance 이동 */
-    public boolean moveDBtoAnotherPool(String alias, DBServerlessMode sourceMode, DBServerlessMode targetMode) {
-      Map<String, DBInstance> sourcePool;
-      Map<String, DBInstance> targetPool;
-      DBInstance moveDBInstance;
 
-      if (!dbInstancePool.isExistInDBPool(alias)) {
-        return false;
-      }
+
+    /* Pool사이에서의 DB Instance 이동 */
+  public boolean moveDBtoAnotherPool(String alias, DBServerlessMode sourceMode, DBServerlessMode targetMode) {
+    Map<String, DBInstance> sourcePool;
+    Map<String, DBInstance> targetPool;
+    DBInstance moveDBInstance;
+
+    if (!dbInstancePool.isExistInDBPool(alias)) {
+      return false;
+    }
 
       /* deep copy, shallow copy 고려해야함. 지금은 Flow만 작성 */
-      synchronized (this) {
-        sourcePool = dbInstancePool.getDBPoolByMode(sourceMode);
-        targetPool = dbInstancePool.getDBPoolByMode(targetMode);
-        if (!sourcePool.containsKey(alias))
-          return false;
-        moveDBInstance = sourcePool.get(alias);
-        targetPool.put(alias, moveDBInstance);
-        sourcePool.remove(alias);
-      }
-
-      return true;
-    }
-
-    public boolean scaleOutDB(String alias) throws IOException {
-      Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
-      Map.Entry<String, DBInstance> dbInstanceEntry;
-      boolean result=false;
-      if (pool.isEmpty())
+    synchronized (this) {
+      sourcePool = dbInstancePool.getDBPoolByMode(sourceMode);
+      targetPool = dbInstancePool.getDBPoolByMode(targetMode);
+      if (!sourcePool.containsKey(alias))
         return false;
-
-      dbInstanceEntry = pool.entrySet().iterator().next();
-      /*
-       load balancer 등록 등 일련의 절차
-       로드밸런서의 동작은 로드밸런서에 특정 ip를 등록하는 식으로 이루어지는 것이 아닌, 해당 각 노드의 pod의 yaml에
-       특정한 Label을 기입함으로써 이루어진다.
-       단 이는 pod가 동작중에도 동적으로 수행될 수 있다.
-       이를 위해 위의 yaml을 parsing하여 특정할 라벨링을 수정하는 메서드가 필요하다.
-       pod에 대한 접근은 다음과 같은 형식으로 가능하다.
-       kubectl edit pod pod이름 -n 네임스페이스 이름
-      */
-      kubernetesManagementService.addDBtoLB(alias);
-      /* 만약 아래의 작업이 실패하면, Load balancer에 등록된 것도 삭제해주어야 함
-      * 물론 throw 처리할수도 있음
-      * */
-      result = moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active);
-
-      if (!result) {
-        kubernetesManagementService.removeDBfromLB(alias);
-      }
-
-      return result;
+      moveDBInstance = sourcePool.get(alias);
+      targetPool.put(alias, moveDBInstance);
+      sourcePool.remove(alias);
     }
+
+    return true;
+  }
+
+  public boolean scaleOutDB(String alias) throws IOException {
+    Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
+    Map.Entry<String, DBInstance> dbInstanceEntry;
+    boolean result=false;
+    if (pool.isEmpty())
+      return false;
+
+    dbInstanceEntry = pool.entrySet().iterator().next();
+    /*
+     load balancer 등록 등 일련의 절차
+     로드밸런서의 동작은 로드밸런서에 특정 ip를 등록하는 식으로 이루어지는 것이 아닌, 해당 각 노드의 pod의 yaml에
+     특정한 Label을 기입함으로써 이루어진다.
+     단 이는 pod가 동작중에도 동적으로 수행될 수 있다.
+     이를 위해 위의 yaml을 parsing하여 특정할 라벨링을 수정하는 메서드가 필요하다.
+     pod에 대한 접근은 다음과 같은 형식으로 가능하다.
+     kubectl edit pod pod이름 -n 네임스페이스 이름
+    */
+    kubernetesManagementService.addDBtoLB(alias);
+    /* 만약 아래의 작업이 실패하면, Load balancer에 등록된 것도 삭제해주어야 함
+     * 물론 throw 처리할수도 있음
+     * */
+    result = moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active);
+
+    if (!result) {
+      kubernetesManagementService.removeDBfromLB(alias);
+    }
+
+    return result;
+  }
 
     /* 특정 alias를 주느냐 아니냐에 따라 구현이 다름 */
     /*

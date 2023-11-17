@@ -7,6 +7,13 @@ public class AdminMsgType {
 
   public static final int ADMIN_MSG_ADD_DB = 20221000;
   public static final int ADMIN_MSG_ADD_DB_REPLY = 20221001;
-  public static final int ADMIN_MSG_DB_BOOT = 20221002;
-  public static final int ADMIN_MSG_DB_BOOT_REPLY = 20221003;
+  public static final int ADMIN_MSG_ADD_GROUP = 20221002;
+  public static final int ADMIN_MSG_ADD_GROUP_REPLY = 20221003;
+  public static final int ADMIN_MSG_DB_BOOT = 20221004;
+  public static final int ADMIN_MSG_DB_BOOT_REPLY = 20221005;
+  public static final int ADMIN_MSG_SCALE_IN = 20221006;
+  public static final int ADMIN_MSG_SCALE_IN_REPLY = 20221007;
+  public static final int ADMIN_MSG_SCALE_OUT = 20221008;
+  public static final int ADMIN_MSG_SCALE_OUT_REPLY = 20221009;
+
 }
