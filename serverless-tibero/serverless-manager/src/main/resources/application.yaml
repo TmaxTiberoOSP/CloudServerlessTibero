@@ -5,4 +5,5 @@ serverless:
   sysmaster:
     host: ${SYSMASTER_IP:-localhost}
     port: ${SYSMASTER_PORT:-2525}
+    url: http://${serverless.sysmaster.host}:${serverless.sysmaster.port}/api/resources
 

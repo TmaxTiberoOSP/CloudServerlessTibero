@@ -10,22 +10,24 @@ import com.tmax.serverless.core.message.JsonMessage;
 import com.tmax.serverless.core.message.RegularMessage;
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.ToString;
 
-@ToString(callSuper = true)
+@Getter
+@ToString
 @ServerlessMessage(ADMIN_MSG_ADD_GROUP)
 public class AdminMsgAddGroup extends JsonMessage {
 
   private String groupName;
-  private List<String> aliasList;
+  //private List<String> aliasList;
 
   public AdminMsgAddGroup(RegularMessage header) { super(header); }
 
   @Builder
-  public AdminMsgAddGroup(String groupName, List<String> aliasList) {
+  public AdminMsgAddGroup(String groupName /*, List<String> aliasList*/) {
     super(ADMIN_MSG_ADD_GROUP);
 
     this.groupName = groupName;
-    this.aliasList = aliasList;
+    //this.aliasList = aliasList;
   }
 }

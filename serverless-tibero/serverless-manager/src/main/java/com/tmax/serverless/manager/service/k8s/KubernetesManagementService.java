@@ -1,12 +1,7 @@
-package com.tmax.serverless.manager.service;
+package com.tmax.serverless.manager.service.k8s;
 
-import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Service;
-import com.tmax.serverless.core.container.PropertyContainer;
 import com.tmax.serverless.manager.context.DBContactInfo;
-import com.tmax.serverless.manager.context.DBInstance;
-import com.tmax.serverless.manager.context.DBInstancePool;
-import io.kubernetes.client.Exec;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
@@ -18,19 +13,7 @@ import io.kubernetes.client.util.KubeConfig;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import io.kubernetes.client.util.Config;
-import io.kubernetes.client.util.Streams;
-
-import javax.print.URIException;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j

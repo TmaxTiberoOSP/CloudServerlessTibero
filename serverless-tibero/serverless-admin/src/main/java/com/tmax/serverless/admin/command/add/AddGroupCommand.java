@@ -28,11 +28,11 @@ public class AddGroupCommand extends CallableSubCommand<AdminMsgAddGroupReply> {
       required = true)
   private String groupName;
 
-  @Option(
-      names = {"--alias-list"},
-      description = "DB Instance alias list for Monitoring",
-      required = true)
-  private List<String> aliasList;
+//  @Option(
+//      names = {"--alias-list"},
+//      description = "DB Instance alias list for Monitoring",
+//      required = true)
+//  private List<String> aliasList;
 
   @Override
   public String getServiceName() {
@@ -44,7 +44,7 @@ public class AddGroupCommand extends CallableSubCommand<AdminMsgAddGroupReply> {
     log.info("{}", this);
     AdminMsgAddGroup req = AdminMsgAddGroup.builder()
         .groupName(groupName)
-        .aliasList(aliasList)
+        //.aliasList(aliasList)
         .build();
     log.info("req msg: " + req);
     return send(req,

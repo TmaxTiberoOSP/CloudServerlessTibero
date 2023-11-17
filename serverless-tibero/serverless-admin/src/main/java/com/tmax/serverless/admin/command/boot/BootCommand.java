@@ -5,11 +5,11 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "boot",
-    synopsisSubcommandLabel = "(node | master-vdb)",
+    synopsisSubcommandLabel = "(node)",
     subcommands = {
         BootNodeCommand.class
     },
-    description = "boot node, master-vdb\n")
+    description = "boot node\n")
 public class BootCommand extends SuperCommand {
 
 }

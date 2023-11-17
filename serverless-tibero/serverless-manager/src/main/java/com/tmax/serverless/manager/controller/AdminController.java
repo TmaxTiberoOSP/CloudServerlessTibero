@@ -9,6 +9,8 @@ import com.tmax.serverless.core.annotation.ServerlessMessageMapping;
 import com.tmax.serverless.core.message.ReturnCode;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
+import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
+import com.tmax.serverless.core.message.admin.AdminMsgAddGroupReply;
 import com.tmax.serverless.core.message.admin.AdminMsgDbBoot;
 import com.tmax.serverless.core.message.admin.AdminMsgDbBootReply;
 import com.tmax.serverless.manager.service.PoolManagementService;
@@ -26,10 +28,23 @@ public class AdminController {
     log.info("{}", req);
 
     boolean result = poolManagementService.addDBtoInstancePool(req);
-
     AdminMsgAddDBReply res = AdminMsgAddDBReply.builder()
             .returnCode(result ? SUCCESS : FAIL)
             .build();
+
+    log.info("{}", res);
+
+    return res;
+  }
+
+  public AdminMsgAddGroupReply addGroupForMonitoring(
+      ChannelHandlerContext ctx, AdminMsgAddGroup req) {
+    log.info("{}", req);
+
+    boolean result = poolManagementService.addGroupForMonitoring(req);
+    AdminMsgAddGroupReply res = AdminMsgAddGroupReply.builder()
+        .returnCode(result ? SUCCESS : FAIL)
+        .build();
 
     log.info("{}", res);
 

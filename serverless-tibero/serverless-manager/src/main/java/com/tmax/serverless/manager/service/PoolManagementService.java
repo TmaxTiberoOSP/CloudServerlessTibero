@@ -2,24 +2,33 @@ package com.tmax.serverless.manager.service;
 
 import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Service;
+import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.core.context.DBServerlessMode;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
+import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
 import com.tmax.serverless.manager.context.DBInstance;
 import com.tmax.serverless.manager.context.DBInstancePool;
+import com.tmax.serverless.manager.service.k8s.KubernetesManagementService;
+import com.tmax.serverless.manager.service.sysmaster.SysMasterAddDBReq;
+import com.tmax.serverless.manager.service.sysmaster.SysMasterService;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.net.URI;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class PoolManagementService {
+  @Value("${serverless.sysmaster.url}")
+  private String sysMasterUrl;
   @Autowired
-  KubernetesManagementService kubernetesManagementService;
-
+  private SysMasterService sysMasterService;
   @Autowired
-  DBInstancePool dbInstancePool;
+  private KubernetesManagementService kubernetesManagementService;
+  @Autowired
+  private DBInstancePool dbInstancePool;
 
   public void init() {
     /*
@@ -29,7 +38,7 @@ public class PoolManagementService {
   }
 
   /* 완전히 새로운 DB를 Pool에 추가*/
-  public boolean addDBtoInstancePool(AdminMsgAddDB req) {
+  public synchronized boolean addDBtoInstancePool(AdminMsgAddDB req) {
     String dbName = req.getDbName();
     String alias = req.getAlias();
     String ip = req.getIp();
@@ -41,7 +50,23 @@ public class PoolManagementService {
     Map<String, DBInstance> pool;
     if (dbInstancePool.isExistInDBPool(alias))
       return false;
-    DBInstance newDBInstance = new DBInstance(alias, mode);
+
+    DBInstance newDBInstance = DBInstance.builder()
+        .id(DBInstance.getNewId())
+        .dbName(dbName)
+        .alias(alias)
+        .ip(ip)
+        .port(port)
+        .dbUser(dbUser)
+        .dbPassword(dbPassword)
+        .mode(mode)
+        .build();
+
+    if (sysMasterService.addDBToSysMaster(newDBInstance)) {
+      log.info("Fail to add new DB Instance(%s) to SysMaster!", alias);
+      DBInstance.decreaseId();
+      return false;
+    }
 
     switch (mode) {
       case Active:
@@ -52,12 +77,19 @@ public class PoolManagementService {
       case WarmUp:
         pool = dbInstancePool.getWarmUpDBPool();
         pool.put(alias, newDBInstance);
+        log.info("WarmUpPool:" + pool);
         return true;
       default:
         return false;
     }
   }
 
+  public boolean addGroupForMonitoring(AdminMsgAddGroup req) {
+    String monitoringGroupName = req.getGroupName();
+
+
+    return true;
+  }
 
 
     /* Pool사이에서의 DB Instance 이동 */

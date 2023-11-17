@@ -5,10 +5,9 @@ import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Component;
 import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.core.handler.TbMessageHandler;
-import com.tmax.serverless.core.handler.WebSocketClientHandler;
 import com.tmax.serverless.core.handler.codec.JsonMessageEncoder;
 import com.tmax.serverless.core.handler.codec.TbMessageDecoder;
-import com.tmax.serverless.manager.service.KubernetesManagementService;
+import com.tmax.serverless.manager.service.k8s.KubernetesManagementService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -17,13 +16,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import io.netty.handler.codec.http.DefaultHttpHeaders;
-import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketVersion;
-
 import io.kubernetes.client.openapi.ApiException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +36,8 @@ public class ServerlessManager {
   @Value("${serverless.sysmaster.port}")
   private int sysMasterPort;
   private Client client;
+  private boolean isMonitoring = false;
+  private String monitoringGroupName;
 
   @Autowired
   KubernetesManagementService kubernetesManagementService;
@@ -51,7 +47,7 @@ public class ServerlessManager {
   }
 
   public void run() throws InterruptedException, URISyntaxException, IOException, ApiException, InterruptedException {
-    kubernetesManagementService.init();
+    //kubernetesManagementService.init();
     ServerBootstrap serverBootstrap = new ServerBootstrap()
         .group(listenerGroup, workerGroup)
         // TODO: EpollServerSocketChannel(Linux only) 사용 논의 필요
@@ -72,28 +68,26 @@ public class ServerlessManager {
 
     serverBootstrap.bind(host, port).sync();
     log.info("Serverless Manager Netty Server configuration complete.");
-
-    runClient();
   }
 
-  public void runClient() throws URISyntaxException {
-    client = Client.builder()
-        .host(sysMasterHost)
-        .port(sysMasterPort)
-        .sysMasterBuild();
-
-    log.info("{}", client);
-
-    boolean connected = client.connect();
-    if (connected) {
-      try {
-        client.getWebSocketHandler().handshakeFuture().sync();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-  }
+//  public void runClient() throws URISyntaxException {
+//    client = Client.builder()
+//        .host(sysMasterHost)
+//        .port(sysMasterPort)
+//        .sysMasterBuild();
+//
+//    log.info("{}", client);
+//
+//    boolean connected = client.connect();
+//    if (connected) {
+//      try {
+//        client.getWebSocketHandler().handshakeFuture().sync();
+//      } catch (InterruptedException e) {
+//        throw new RuntimeException(e);
+//      }
+//    }
+//
+//  }
 
 
 }

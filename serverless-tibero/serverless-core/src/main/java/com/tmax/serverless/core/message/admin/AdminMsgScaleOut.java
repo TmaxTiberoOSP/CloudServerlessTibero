@@ -8,9 +8,11 @@ import com.tmax.serverless.core.annotation.ServerlessMessage;
 import com.tmax.serverless.core.message.JsonMessage;
 import com.tmax.serverless.core.message.RegularMessage;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.ToString;
 
-@ToString(callSuper = true)
+@Getter
+@ToString
 @ServerlessMessage(ADMIN_MSG_SCALE_OUT)
 public class AdminMsgScaleOut extends JsonMessage {
   private String dbName;
