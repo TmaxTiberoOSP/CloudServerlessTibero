@@ -1,5 +1,6 @@
 package com.tmax.serverless.manager.service.sysmaster;
 
+import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,20 +21,20 @@ public class SysMasterAddDBReq {
   private String type;
   private String userDefinedColor;
 
-  public MultiValueMap<String, String> toMultiValueMap() {
-    LinkedMultiValueMap map = new LinkedMultiValueMap<String, String>();
+  public JsonObject toJsonBody() {
+    JsonObject body = new JsonObject();
 
-    map.add("dbName", dbName);
-    map.add("dbUser", dbUser);
-    map.add("dbPassword", dbPassword);
-    map.add("id", id);
-    map.add("ip", ip);
-    map.add("port", port);
-    map.add("name", name);
-    map.add("type", type);
-    map.add("userDefinedColor", userDefinedColor);
+    body.addProperty("dbName", dbName);
+    body.addProperty("dbUser", dbUser);
+    body.addProperty("dbPassword", dbPassword);
+    body.addProperty("id", id);
+    body.addProperty("ip", ip);
+    body.addProperty("port", port);
+    body.addProperty("name", name);
+    body.addProperty("type", type);
+    body.addProperty("userDefinedColor", userDefinedColor);
 
-    return map;
+    return body;
   }
 
 }
