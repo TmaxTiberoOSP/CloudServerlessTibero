@@ -1,6 +1,8 @@
 package com.tmax.serverless.manager.service.k8s;
 
 import com.tmax.serverless.core.annotation.Service;
+import com.tmax.serverless.core.context.DBExecuteCommand;
+import com.tmax.serverless.core.context.LBExecuteCommand;
 import com.tmax.serverless.manager.context.DBContactInfo;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -22,7 +24,7 @@ public class KubernetesManagementService {
     @Getter
     private final ConcurrentHashMap<String, DBContactInfo> dbContactPool = new ConcurrentHashMap<>();
     public void init() throws IOException, ApiException {
-        setDBList();
+        //setDBList();
     }
     public void setDBList() throws IOException, ApiException {
         int aliasIndex = 0;
@@ -53,27 +55,46 @@ public class KubernetesManagementService {
         }
     }
 
-    public void executeDBCommand(String alias, String command) throws IOException {
+    public void executeDBCommand(String alias, DBExecuteCommand command) throws IOException {
         DBContactInfo dbContactInfo = dbContactPool.get(alias);
         String podName = dbContactInfo.getPodName();
-        /*
-        command 제한 두기
-         */
-        String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero", "--", "/bin/bash","-c", "export TB_HOME=/tibero;export TB_SID="+alias+";"+command};
+        String tbCommand;
+
+        if(command == DBExecuteCommand.Boot) {
+            tbCommand = "tbboot";
+        }
+        else if(command == DBExecuteCommand.Down)
+            tbCommand = "tbdown";
+        else {
+            log.info("DB Command : not valid ");
+            return ;
+        }
+
+        log.info("DB Command : "+tbCommand);
+
+        String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero", "--", "/bin/bash","-c", "export TB_HOME=/tibero;export TB_SID="+alias+";"+tbCommand};
         final Process proc = Runtime.getRuntime().exec(cmd);
     }
 
-    public void addDBtoLB(String alias) throws IOException {
+    public void executeLBCommand(String alias, LBExecuteCommand command) throws IOException {
         DBContactInfo dbContactInfo = dbContactPool.get(alias);
         String podName = dbContactInfo.getPodName();
-        /*
-        command 제한 두기
-         */
-        String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero", "app=zeta-dbc", "--overwrite"};
+        String lbCommand;
+
+        if(command == LBExecuteCommand.ActiveDB) {
+            lbCommand = "active-db";
+        }
+        else if(command == LBExecuteCommand.StandbyDB)
+            lbCommand = "standby-db";
+        else {
+            log.info("LB Command : not valid ");
+            return ;
+        }
+
+        log.info("LB Command : "+lbCommand);
+
+        String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero", "app="+lbCommand, "--overwrite"};
         final Process proc = Runtime.getRuntime().exec(cmd);
     }
 
-    public void removeDBfromLB(String alias) {
-
-    }
 }
