@@ -6,6 +6,7 @@ import com.tmax.serverless.admin.cli.LogLevelOption.Converter;
 import com.tmax.serverless.admin.command.add.AddCommand;
 import com.tmax.serverless.admin.command.boot.BootCommand;
 import com.tmax.serverless.admin.command.delete.DeleteCommand;
+import com.tmax.serverless.admin.command.scale.ScaleCommand;
 import com.tmax.serverless.core.Client;
 import com.tmax.serverless.core.config.ServerlessConst;
 import com.tmax.serverless.core.log.Logger;
@@ -23,10 +24,11 @@ import picocli.CommandLine.Spec;
 @Slf4j
 @ToString
 @Command(
-    name = "slctl",
+    name = "smcli",
     subcommands = {
         AddCommand.class,
         DeleteCommand.class,
+        ScaleCommand.class,
         BootCommand.class,
     })
 public class MainCommand implements Runnable {
