@@ -11,7 +11,7 @@ import picocli.CommandLine.Command;
         ScaleInCommand.class,
         ScaleOutCommand.class
     },
-    description = "Scale In or Scale Out\n"
+    description = "scale In or scale Out\n"
 )
 public class ScaleCommand extends SuperCommand {
 
