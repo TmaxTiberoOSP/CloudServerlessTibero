@@ -4,11 +4,11 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "delete",
-    synopsisSubcommandLabel = "(Active | Warm-Up)",
+    synopsisSubcommandLabel = "(DB | Group)",
     subcommands = {
 
     },
-    description = "add Active DB or Warm-Up DB\n"
+    description = "delete DB or Group\n"
 )
 public class DeleteCommand {
 
