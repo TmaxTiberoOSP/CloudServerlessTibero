@@ -11,6 +11,7 @@ import com.tmax.serverless.manager.context.DBInstancePool;
 import com.tmax.serverless.manager.service.k8s.KubernetesManagementService;
 import com.tmax.serverless.manager.service.sysmaster.SysMasterAddDBReq;
 import com.tmax.serverless.manager.service.sysmaster.SysMasterService;
+import java.util.ArrayList;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class PoolManagementService {
         .mode(mode)
         .build();
 
-    if (sysMasterService.addDBToSysMaster(newDBInstance)) {
+    if (!sysMasterService.addDBToSysMaster(newDBInstance)) {
       log.info("Fail to add new DB Instance(%s) to SysMaster!", alias);
       DBInstance.decreaseId();
       return false;
@@ -83,9 +84,21 @@ public class PoolManagementService {
   }
 
   public boolean addGroupForMonitoring(AdminMsgAddGroup req) {
-    String monitoringGroupName = req.getGroupName();
+    String groupName = req.getGroupName();
+    ArrayList<String> monitoringList = new ArrayList<>();
+    Map<String, DBInstance> pool;
 
+    pool = dbInstancePool.getActiveDBPool();
+    for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
+      monitoringList.add(entry.getValue().getId().toString());
+    }
+    pool = dbInstancePool.getWarmUpDBPool();
+    for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
+      monitoringList.add(entry.getValue().getId().toString());
+    }
 
+    if (!sysMasterService.addGroupToSysMaster(groupName, monitoringList))
+      return false;
 
     return true;
   }

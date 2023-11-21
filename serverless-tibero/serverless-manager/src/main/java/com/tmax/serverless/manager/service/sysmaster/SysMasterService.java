@@ -4,11 +4,13 @@ import com.tmax.serverless.core.annotation.Service;
 import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.manager.context.DBInstance;
 import java.net.URI;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -54,14 +56,44 @@ public class SysMasterService {
         String.class
     );
 
-    return true;
+    log.info("addDBToSysMaster result: {}", responseEntity);
+
+    if (responseEntity.getStatusCode() != HttpStatus.OK)
+      return false;
+    else
+      return true;
   }
 
 
-  public boolean addGroupToSysMaster() {
+  public boolean addGroupToSysMaster(String groupName, ArrayList<String> monitoringList) {
+    SysMasterAddGroupReq req = SysMasterAddGroupReq.builder()
+        .name(groupName)
+        .monitortingList(monitoringList)
+        .build();
 
+    URI uri = UriComponentsBuilder
+        .fromUriString(sysMasterUri)
+        .build(false).encode().toUri();
 
-    return true;
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "debug");
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    HttpEntity<String> httpEntity = new HttpEntity<>(req.toJsonBody().toString(), headers);
+
+    ResponseEntity<String> responseEntity = new RestTemplate().exchange(
+        uri,
+        HttpMethod.POST,
+        httpEntity,
+        String.class
+    );
+
+    log.info("addGroupToSysMaster result: {}", responseEntity);
+
+    if (responseEntity.getStatusCode() != HttpStatus.OK)
+      return false;
+    else
+      return true;
   }
 
 
