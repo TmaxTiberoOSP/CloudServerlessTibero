@@ -21,8 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PoolManagementService {
-  @Value("${serverless.sysmaster.url}")
-  private String sysMasterUrl;
   @Autowired
   private SysMasterService sysMasterService;
   @Autowired

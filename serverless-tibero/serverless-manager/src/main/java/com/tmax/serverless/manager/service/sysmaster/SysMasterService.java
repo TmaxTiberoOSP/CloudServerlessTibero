@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 @Service
 public class SysMasterService {
-  @Value("serverless.sysmaster.uri")
+  @Value("serverless.sysmaster.url")
   private String sysMasterUri;
   @Value("serverless.sysmaster.type")
   private String monitoringType;
