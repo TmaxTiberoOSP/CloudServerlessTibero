@@ -6,12 +6,13 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "scale",
-    synopsisSubcommandLabel = "(In | Out)",
+    synopsisSubcommandLabel = "(In | Out | OutComplete)",
     subcommands = {
         ScaleInCommand.class,
-        ScaleOutCommand.class
+        ScaleOutCommand.class,
+        ScaleOutCompleteCommand.class
     },
-    description = "Scale In or Scale Out\n"
+    description = "scale In or Out or OutComplete\n"
 )
 public class ScaleCommand extends SuperCommand {
 

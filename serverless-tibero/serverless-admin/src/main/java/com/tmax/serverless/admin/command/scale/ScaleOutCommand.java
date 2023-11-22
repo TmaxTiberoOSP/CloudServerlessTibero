@@ -59,7 +59,7 @@ public class ScaleOutCommand extends CallableSubCommand<AdminMsgScaleOutReply> {
     log.info("req msg: " + req);
     return send(req,
         (ctx, res) -> {
-          log.info("AddDBCommand result: {}", res);
+          log.info("ScaleOutCommand result: {}", res);
           printResult(res, String.format("DB(%s) became active cold mode.",
               ConsoleColors.set(alias, Styles.BOLD)));
         });

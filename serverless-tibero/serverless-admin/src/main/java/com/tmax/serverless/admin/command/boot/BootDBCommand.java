@@ -1,13 +1,13 @@
-package com.tmax.serverless.admin.command.scale;
+package com.tmax.serverless.admin.command.boot;
+
+import static com.tmax.serverless.admin.utils.ConsoleColors.Styles.BOLD;
 
 import com.tmax.serverless.admin.command.CallableSubCommand;
 import com.tmax.serverless.admin.utils.ConsoleColors;
 import com.tmax.serverless.admin.utils.ConsoleColors.Styles;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
-import com.tmax.serverless.core.message.admin.AdminMsgAddGroupReply;
-import com.tmax.serverless.core.message.admin.AdminMsgScaleIn;
-import com.tmax.serverless.core.message.admin.AdminMsgScaleInReply;
-import java.util.List;
+import com.tmax.serverless.core.message.admin.AdminMsgBootDB;
+import com.tmax.serverless.core.message.admin.AdminMsgBootDBReply;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
@@ -15,8 +15,9 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 @Slf4j
-@Command(name = "in")
-public class ScaleInCommand extends CallableSubCommand<AdminMsgScaleInReply> {
+@Command(name = "db")
+public class BootDBCommand extends CallableSubCommand<AdminMsgBootDBReply> {
+
   @Spec
   private CommandSpec spec;
 
@@ -44,6 +45,7 @@ public class ScaleInCommand extends CallableSubCommand<AdminMsgScaleInReply> {
       required = true)
   private int port;
 
+
   @Override
   public String getServiceName() {
     return getClass().toString();
@@ -52,18 +54,21 @@ public class ScaleInCommand extends CallableSubCommand<AdminMsgScaleInReply> {
   @Override
   public Integer call() {
     log.info("{}", this);
-    AdminMsgScaleIn req = AdminMsgScaleIn.builder()
+
+    AdminMsgBootDB req = AdminMsgBootDB.builder()
         .dbName(dbName)
         .alias(alias)
         .ip(ip)
         .port(port)
         .build();
     log.info("req msg: " + req);
+
     return send(req,
         (ctx, res) -> {
-          log.info("ScaleInCommand result: {}", res);
-          printResult(res, String.format("DB(%s) became active mode.",
-              ConsoleColors.set(alias, Styles.BOLD)));
+          log.info("BootDBCommand result:", res);
+          printResult(res, String.format("boot instance(%s)",
+              ConsoleColors.set(alias, BOLD)));
         });
   }
+
 }

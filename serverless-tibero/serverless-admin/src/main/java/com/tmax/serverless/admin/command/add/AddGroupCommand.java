@@ -49,7 +49,7 @@ public class AddGroupCommand extends CallableSubCommand<AdminMsgAddGroupReply> {
     log.info("req msg: " + req);
     return send(req,
         (ctx, res) -> {
-          log.info("AddDBCommand result: {}", res);
+          log.info("AddGroupCommand result: {}", res);
           printResult(res, String.format("add group(%s) on Monitoring mode",
               ConsoleColors.set(groupName, Styles.BOLD)));
         });
