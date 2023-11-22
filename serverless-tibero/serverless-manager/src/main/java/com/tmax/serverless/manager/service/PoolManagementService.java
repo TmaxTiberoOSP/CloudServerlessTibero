@@ -111,10 +111,11 @@ public class PoolManagementService {
     DBInstance moveDBInstance;
 
     if (!dbInstancePool.isExistInDBPool(alias)) {
+      log.info(alias + " is not in a Instance Pool");
       return false;
     }
 
-      /* deep copy, shallow copy 고려해야함. 지금은 Flow만 작성 */
+    /* Todo : deep copy, shallow copy 고려해야함. 지금은 Flow만 작성 */
     synchronized (this) {
       sourcePool = dbInstancePool.getDBPoolByMode(sourceMode);
       targetPool = dbInstancePool.getDBPoolByMode(targetMode);
@@ -128,47 +129,79 @@ public class PoolManagementService {
     return true;
   }
 
-  public boolean scaleOutDB(String alias) throws IOException {
+  public boolean scaleOutDB(String alias) {
     Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
     Map.Entry<String, DBInstance> dbInstanceEntry;
     boolean result=false;
-    if (pool.isEmpty())
+    if (pool.isEmpty()) {
+      log.info("The Instance Pool is empty.");
       return false;
+    }
 
     dbInstanceEntry = pool.entrySet().iterator().next();
 
-    kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
-
-    kubernetesManagementService.executeDBCommand(alias, DBExecuteCommand.Boot);
-
-    result = moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active);
-
-    if (!result) {
-      kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.StandbyDB);
+    log.info("Start to scale out db : " + alias);
+    if (!moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.ActiveCold ,DBServerlessMode.Active)) {
+      if (!moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active)) {
+        log.info("Fail to move DB from WarmUp to Active");
+        return false;
+      }
+    } else {
+      log.info("the ActiveCold one goes to Active");
+      return kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
     }
 
-    return result;
+    if (!kubernetesManagementService.executeDBCommand(alias, DBExecuteCommand.Boot)) {
+      moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.Active, DBServerlessMode.WarmUp);
+      return false;
+    }
+
+    /* ToDo : DB Boot 성공하고 LB 등록실패하면? */
+    return kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
   }
 
-    public boolean scaleInDB(String alias) throws IOException {
+    public boolean scaleInDB(String alias) {
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
-    if (!pool.containsKey(alias))
+    log.info("Start to scale-in db : " + alias);
+
+    if (!pool.containsKey(alias)) {
+      log.info(alias + " is not in Active Instance Pool");
       return false;
+    }
 
-    kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.StandbyDB);
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold)) {
+      log.info("Fail to move DB from Active to ActiveCold");
+      return false;
+    }
 
-    return moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold);
+    if (!kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.StandbyDB)) {
+      moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.Active);
+      return false;
+    }
+
+    return true;
   }
 
-  public boolean makeDBWarmUp(String alias) throws IOException {
+  public boolean makeDBWarmUp(String alias) {
     Map<String, DBInstance> pool = dbInstancePool.getActiveColdDBPool();
 
-    if (!pool.containsKey(alias))
+    log.info("Start to make db WarmUp : " + alias);
+    if (!pool.containsKey(alias)) {
+      log.info(alias + " is not in ActiveCold Instance Pool");
       return false;
+    }
 
-    kubernetesManagementService.executeDBCommand(alias, DBExecuteCommand.Down);
+    if(!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
+      log.info("Fail to move DB from ActiveCold to WarmUp");
+      return false;
+    }
 
-    return moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp);
+    if (!kubernetesManagementService.executeDBCommand(alias, DBExecuteCommand.Down)) {
+      moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp, DBServerlessMode.ActiveCold);
+      return false;
+    }
+
+    return true;
   }
 }

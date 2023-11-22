@@ -55,7 +55,7 @@ public class KubernetesManagementService {
         }
     }
 
-    public void executeDBCommand(String alias, DBExecuteCommand command) throws IOException {
+    public boolean executeDBCommand(String alias, DBExecuteCommand command) {
         DBContactInfo dbContactInfo = dbContactPool.get(alias);
         String podName = dbContactInfo.getPodName();
         String tbCommand;
@@ -67,16 +67,23 @@ public class KubernetesManagementService {
             tbCommand = "tbdown";
         else {
             log.info("DB Command : not valid ");
-            return ;
+            return false;
         }
 
-        log.info("DB Command : "+tbCommand);
+        log.info("DB Command : " + tbCommand);
 
         String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero", "--", "/bin/bash","-c", "export TB_HOME=/tibero;export TB_SID="+alias+";"+tbCommand};
-        final Process proc = Runtime.getRuntime().exec(cmd);
+        if (executeCommand(cmd))
+            log.info ("Success to " + tbCommand + " DB");
+        else {
+            log.info ("Fail to " + tbCommand + " DB");
+            return false;
+        }
+
+        return true;
     }
 
-    public void executeLBCommand(String alias, LBExecuteCommand command) throws IOException {
+    public boolean executeLBCommand(String alias, LBExecuteCommand command) {
         DBContactInfo dbContactInfo = dbContactPool.get(alias);
         String podName = dbContactInfo.getPodName();
         String lbCommand;
@@ -88,13 +95,38 @@ public class KubernetesManagementService {
             lbCommand = "standby-db";
         else {
             log.info("LB Command : not valid ");
-            return ;
+            return false;
         }
 
-        log.info("LB Command : "+lbCommand);
+        log.info("LB Command : " + lbCommand);
 
         String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero", "app="+lbCommand, "--overwrite"};
-        final Process proc = Runtime.getRuntime().exec(cmd);
+
+        if (executeCommand(cmd))
+            log.info ("Success to made " + lbCommand);
+        else {
+            log.info ("Fail to made " + lbCommand);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean executeCommand(String[] cmd) {
+        Process proc = null;
+        boolean success = true;
+
+        try {
+            proc = Runtime.getRuntime().exec(cmd);
+        }
+        catch (IOException e) {
+            log.error("Error on exec() method");
+            e.printStackTrace();
+            success = false;
+        } finally {
+            log.error("Error on exec() method");
+        }
+        return success;
     }
 
 }
