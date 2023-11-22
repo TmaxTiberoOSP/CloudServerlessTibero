@@ -65,7 +65,7 @@ public class BootDBCommand extends CallableSubCommand<AdminMsgBootDBReply> {
 
     return send(req,
         (ctx, res) -> {
-          log.info("{}", res);
+          log.info("BootDBCommand result:", res);
           printResult(res, String.format("boot instance(%s)",
               ConsoleColors.set(alias, BOLD)));
         });

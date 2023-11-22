@@ -9,8 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
-@ToString
+@ToString(callSuper = true)
 @ServerlessMessage(ADMIN_MSG_DOWN_DB_REPLY)
 public class AdminMsgDownDBReply extends AdminMsgReply {
 

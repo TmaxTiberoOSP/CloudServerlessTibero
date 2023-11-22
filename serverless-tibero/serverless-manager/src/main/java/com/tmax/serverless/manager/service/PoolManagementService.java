@@ -150,7 +150,7 @@ public class PoolManagementService {
     return result;
   }
 
-    public boolean scaleInDB(String alias) throws IOException {
+  public boolean scaleInDB(String alias) throws IOException {
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
     if (!pool.containsKey(alias))
@@ -171,4 +171,5 @@ public class PoolManagementService {
 
     return moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp);
   }
+
 }
