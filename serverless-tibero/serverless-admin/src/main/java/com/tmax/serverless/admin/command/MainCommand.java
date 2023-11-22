@@ -6,6 +6,7 @@ import com.tmax.serverless.admin.cli.LogLevelOption.Converter;
 import com.tmax.serverless.admin.command.add.AddCommand;
 import com.tmax.serverless.admin.command.boot.BootCommand;
 import com.tmax.serverless.admin.command.delete.DeleteCommand;
+import com.tmax.serverless.admin.command.down.DownCommand;
 import com.tmax.serverless.admin.command.scale.ScaleCommand;
 import com.tmax.serverless.core.Client;
 import com.tmax.serverless.core.config.ServerlessConst;
@@ -27,9 +28,10 @@ import picocli.CommandLine.Spec;
     name = "smcli",
     subcommands = {
         AddCommand.class,
-        DeleteCommand.class,
+        //DeleteCommand.class,
         ScaleCommand.class,
-        BootCommand.class,
+        //BootCommand.class,
+        //DownCommand.class
     })
 public class MainCommand implements Runnable {
 
