@@ -124,7 +124,6 @@ public class KubernetesManagementService {
             e.printStackTrace();
             success = false;
         } finally {
-            log.error("Error on exec() method");
         }
         return success;
     }
