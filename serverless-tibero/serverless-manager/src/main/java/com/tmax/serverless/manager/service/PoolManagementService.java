@@ -159,7 +159,7 @@ public class PoolManagementService {
     return kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
   }
 
-    public boolean scaleInDB(String alias) {
+  public boolean scaleInDB(String alias) {
       log.info("scaleInDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
