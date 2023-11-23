@@ -6,7 +6,7 @@ import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.core.handler.TbMessageHandler;
 import com.tmax.serverless.core.handler.codec.JsonMessageEncoder;
 import com.tmax.serverless.core.handler.codec.TbMessageDecoder;
-import io.kubernetes.client.openapi.ApiException;
+//import io.kubernetes.client.openapi.ApiException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -43,7 +43,7 @@ public class ServerlessManager {
 
   }
 
-  public void run() throws InterruptedException, URISyntaxException, IOException, ApiException, InterruptedException {
+  public void run() throws InterruptedException, URISyntaxException, IOException, InterruptedException {
     //kubernetesManagementService.init();
     log.info("Serverless Manager Netty Server configuration start.");
     ServerBootstrap serverBootstrap = new ServerBootstrap()

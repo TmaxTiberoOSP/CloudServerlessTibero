@@ -4,6 +4,7 @@ import com.tmax.serverless.core.annotation.Service;
 import com.tmax.serverless.core.context.DBExecuteCommand;
 import com.tmax.serverless.core.context.LBExecuteCommand;
 import com.tmax.serverless.manager.context.DBContactInfo;
+/*
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
@@ -12,7 +13,9 @@ import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+*/
 import lombok.Getter;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -23,9 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KubernetesManagementService {
     @Getter
     private final ConcurrentHashMap<String, DBContactInfo> dbContactPool = new ConcurrentHashMap<>();
-    public void init() throws IOException, ApiException {
+    public void init() throws IOException{
         //setDBList();
     }
+    /*
+    @Deprecated
     public void setDBList() throws IOException, ApiException {
         int aliasIndex = 0;
         InputStream kubeConfigIn = KubernetesManagementService.class
@@ -54,7 +59,7 @@ public class KubernetesManagementService {
             aliasIndex++;
         }
     }
-
+    */
     public boolean executeDBCommand(String alias, DBExecuteCommand command) {
         DBContactInfo dbContactInfo = dbContactPool.get(alias);
         String podName = dbContactInfo.getPodName();
@@ -72,7 +77,7 @@ public class KubernetesManagementService {
 
         log.info("DB Command : " + tbCommand);
 
-        String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero", "--", "/bin/bash",
+        String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero2", "--", "/bin/bash",
                 "-c", "export TB_HOME=/tibero;export TB_SID=" + alias + ";" + tbCommand};
         if (executeCommand(cmd))
             log.info ("Success to " + tbCommand + " DB");
@@ -90,10 +95,10 @@ public class KubernetesManagementService {
         String lbCommand;
 
         if (command == LBExecuteCommand.ActiveDB) {
-            lbCommand = "active-db";
+            lbCommand = "active2-db";
         }
         else if (command == LBExecuteCommand.StandbyDB)
-            lbCommand = "standby-db";
+            lbCommand = "standby2-db";
         else {
             log.info("LB Command : not valid ");
             return false;
@@ -101,7 +106,7 @@ public class KubernetesManagementService {
 
         log.info("LB Command : " + lbCommand);
 
-        String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero", "app="+lbCommand, "--overwrite"};
+        String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero2", "app="+lbCommand, "--overwrite"};
 
         if (executeCommand(cmd))
             log.info ("Success to made " + lbCommand);
