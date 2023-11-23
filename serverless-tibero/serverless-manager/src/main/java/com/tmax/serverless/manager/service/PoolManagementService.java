@@ -160,7 +160,7 @@ public class PoolManagementService {
   }
 
   public boolean scaleInDB(String alias) {
-      log.info("scaleInDB alias:" + alias);
+    log.info("scaleInDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
     log.info("Start to scale-in db : " + alias);
