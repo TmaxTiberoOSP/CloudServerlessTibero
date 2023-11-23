@@ -28,6 +28,8 @@ public class DBInstancePool {
     switch (mode) {
       case Active:
         return activeDBPool;
+      case ActiveCold:
+        return activeColdDBPool;
       case WarmUp:
         return warmUpDBPool;
       default:
