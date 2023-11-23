@@ -193,7 +193,7 @@ public class PoolManagementService {
       return false;
     }
 
-    if(!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
       log.info("Fail to move DB from ActiveCold to WarmUp");
       return false;
     }

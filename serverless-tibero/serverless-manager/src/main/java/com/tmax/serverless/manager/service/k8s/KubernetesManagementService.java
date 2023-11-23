@@ -60,10 +60,10 @@ public class KubernetesManagementService {
         String podName = dbContactInfo.getPodName();
         String tbCommand;
 
-        if(command == DBExecuteCommand.Boot) {
+        if (command == DBExecuteCommand.Boot) {
             tbCommand = "tbboot";
         }
-        else if(command == DBExecuteCommand.Down)
+        else if (command == DBExecuteCommand.Down)
             tbCommand = "tbdown";
         else {
             log.info("DB Command : not valid ");
@@ -89,10 +89,10 @@ public class KubernetesManagementService {
         String podName = dbContactInfo.getPodName();
         String lbCommand;
 
-        if(command == LBExecuteCommand.ActiveDB) {
+        if (command == LBExecuteCommand.ActiveDB) {
             lbCommand = "active-db";
         }
-        else if(command == LBExecuteCommand.StandbyDB)
+        else if (command == LBExecuteCommand.StandbyDB)
             lbCommand = "standby-db";
         else {
             log.info("LB Command : not valid ");
@@ -124,7 +124,8 @@ public class KubernetesManagementService {
             log.error("Error on exec() method");
             e.printStackTrace();
             success = false;
-        } finally {
+        }
+        finally {
         }
         return success;
     }
