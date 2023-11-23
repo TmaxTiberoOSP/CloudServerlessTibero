@@ -136,39 +136,45 @@ public class PoolManagementService {
 
   public boolean scaleOutDB(String alias) {
     log.info("scaleOutDB alias:" + alias);
-    Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
-    Map.Entry<String, DBInstance> dbInstanceEntry;
+    Map<String, DBInstance> activecoldDBPool = dbInstancePool.getActiveColdDBPool();
+    Map<String, DBInstance> warmupDBPool = dbInstancePool.getWarmUpDBPool();
     boolean result=false;
-    if (pool.isEmpty()) {
+    DBInstance dbInstance;
+
+    if (activecoldDBPool.isEmpty() && warmupDBPool.isEmpty()) {
       log.info("The Instance Pool is empty.");
       return false;
     }
 
-    dbInstanceEntry = pool.entrySet().iterator().next();
+    dbInstance = activecoldDBPool.get(alias);
+    if (dbInstance == null) {
+      dbInstance = warmupDBPool.get(alias);
+    }
 
     log.info("Start to scale out db : " + alias);
-    if (!moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.ActiveCold ,DBServerlessMode.Active)) {
-      if (!moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.WarmUp ,DBServerlessMode.Active)) {
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.Active)) {
+      if (!moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp ,DBServerlessMode.Active)) {
         log.info("Fail to move DB from WarmUp to Active");
         return false;
       }
     } else {
       log.info("the ActiveCold one goes to Active");
-      return kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
+      return kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.ActiveDB);
     }
 
-    if (!kubernetesManagementService.executeDBCommand(alias, DBExecuteCommand.Boot)) {
-      moveDBtoAnotherPool(dbInstanceEntry.getKey(), DBServerlessMode.Active, DBServerlessMode.WarmUp);
+    if (!kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Boot)) {
+      moveDBtoAnotherPool(alias, DBServerlessMode.Active, DBServerlessMode.WarmUp);
       return false;
     }
 
     /* ToDo : DB Boot 성공하고 LB 등록실패하면? */
-    return kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
+    return kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.ActiveDB);
   }
 
   public boolean scaleInDB(String alias) {
     log.info("scaleInDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
+    DBInstance dbInstance;
 
     log.info("Start to scale-in db : " + alias);
 
@@ -177,12 +183,14 @@ public class PoolManagementService {
       return false;
     }
 
+    dbInstance = pool.get(alias);
+
     if (!moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold)) {
       log.info("Fail to move DB from Active to ActiveCold");
       return false;
     }
 
-    if (!kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.StandbyDB)) {
+    if (!kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.StandbyDB)) {
       moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.Active);
       return false;
     }
@@ -193,6 +201,7 @@ public class PoolManagementService {
   public boolean makeDBWarmUp(String alias) {
     log.info("makeDBWarmUp alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveColdDBPool();
+    DBInstance dbInstance;
 
     log.info("Start to make db WarmUp : " + alias);
     if (!pool.containsKey(alias)) {
@@ -200,12 +209,14 @@ public class PoolManagementService {
       return false;
     }
 
+    dbInstance = pool.get(alias);
+
     if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
       log.info("Fail to move DB from ActiveCold to WarmUp");
       return false;
     }
 
-    if (!kubernetesManagementService.executeDBCommand(alias, DBExecuteCommand.Down)) {
+    if (!kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Down)) {
       moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp, DBServerlessMode.ActiveCold);
       return false;
     }

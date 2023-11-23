@@ -14,6 +14,7 @@ import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 */
+import com.tmax.serverless.manager.context.DBInstance;
 import lombok.Getter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 public class KubernetesManagementService {
-    @Getter
-    private final ConcurrentHashMap<String, DBContactInfo> dbContactPool = new ConcurrentHashMap<>();
     public void init() throws IOException{
         //setDBList();
     }
@@ -60,9 +59,8 @@ public class KubernetesManagementService {
         }
     }
     */
-    public boolean executeDBCommand(String alias, DBExecuteCommand command) {
-        DBContactInfo dbContactInfo = dbContactPool.get(alias);
-        String podName = dbContactInfo.getPodName();
+    public boolean executeDBCommand(DBInstance dbInstance, DBExecuteCommand command) {
+        String podName = dbInstance.getPodName();
         String tbCommand;
 
         if (command == DBExecuteCommand.Boot) {
@@ -78,7 +76,7 @@ public class KubernetesManagementService {
         log.info("DB Command : " + tbCommand);
 
         String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero2", "--", "/bin/bash",
-                "-c", "export TB_HOME=/tibero;export TB_SID=" + alias + ";" + tbCommand};
+                "-c", "export TB_HOME=/tibero;export TB_SID=" + dbInstance.getAlias() + ";" + tbCommand};
         if (executeCommand(cmd))
             log.info ("Success to " + tbCommand + " DB");
         else {
@@ -89,9 +87,8 @@ public class KubernetesManagementService {
         return true;
     }
 
-    public boolean executeLBCommand(String alias, LBExecuteCommand command) {
-        DBContactInfo dbContactInfo = dbContactPool.get(alias);
-        String podName = dbContactInfo.getPodName();
+    public boolean executeLBCommand(DBInstance dbInstance, LBExecuteCommand command) {
+        String podName = dbInstance.getPodName();
         String lbCommand;
 
         if (command == LBExecuteCommand.ActiveDB) {
