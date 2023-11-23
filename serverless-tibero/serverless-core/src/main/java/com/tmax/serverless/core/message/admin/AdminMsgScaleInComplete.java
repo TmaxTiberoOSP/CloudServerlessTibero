@@ -1,6 +1,6 @@
 package com.tmax.serverless.core.message.admin;
 
-import static com.tmax.serverless.core.message.AdminMsgType.ADMIN_MSG_SCALE_OUT_COMPLETE;
+import static com.tmax.serverless.core.message.AdminMsgType.ADMIN_MSG_SCALE_IN_COMPLETE;
 
 import com.tmax.serverless.core.annotation.ServerlessMessage;
 import com.tmax.serverless.core.message.JsonMessage;
@@ -9,22 +9,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-@Deprecated
 @Getter
 @ToString
-@ServerlessMessage(ADMIN_MSG_SCALE_OUT_COMPLETE)
-public class AdminMsgScaleOutComplete extends JsonMessage {
-
+@ServerlessMessage(ADMIN_MSG_SCALE_IN_COMPLETE)
+public class AdminMsgScaleInComplete extends JsonMessage {
   private String dbName;
   private String alias;
   private String ip;
   private int port;
 
-  public AdminMsgScaleOutComplete(RegularMessage header) { super(header); }
+  public AdminMsgScaleInComplete(RegularMessage header) { super(header); }
 
   @Builder
-  public AdminMsgScaleOutComplete(String dbName, String alias, String ip, int port) {
-    super(ADMIN_MSG_SCALE_OUT_COMPLETE);
+  public AdminMsgScaleInComplete(String dbName, String alias, String ip, int port) {
+    super(ADMIN_MSG_SCALE_IN_COMPLETE);
 
     this.dbName = dbName;
     this.alias = alias;

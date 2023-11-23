@@ -62,7 +62,7 @@ public class ScaleInCommand extends CallableSubCommand<AdminMsgScaleInReply> {
     return send(req,
         (ctx, res) -> {
           log.info("ScaleInCommand result: {}", res);
-          printResult(res, String.format("DB(%s) became active mode.",
+          printResult(res, String.format("DB(%s) became active cold mode.",
               ConsoleColors.set(alias, Styles.BOLD)));
         });
   }

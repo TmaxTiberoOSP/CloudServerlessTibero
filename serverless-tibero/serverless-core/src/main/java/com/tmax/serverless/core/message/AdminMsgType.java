@@ -17,7 +17,9 @@ public class AdminMsgType {
   public static final int ADMIN_MSG_SCALE_IN_REPLY = 20221009;
   public static final int ADMIN_MSG_SCALE_OUT = 20221010;
   public static final int ADMIN_MSG_SCALE_OUT_REPLY = 20221011;
-  public static final int ADMIN_MSG_SCALE_OUT_COMPLETE = 20221012;
-  public static final int ADMIN_MSG_SCALE_OUT_COMPLETE_REPLY = 20221013;
+  public static final int ADMIN_MSG_SCALE_IN_COMPLETE = 20221012;
+  public static final int ADMIN_MSG_SCALE_IN_COMPLETE_REPLY = 20221013;
+  public static final int ADMIN_MSG_SCALE_OUT_COMPLETE = 20221014;
+  public static final int ADMIN_MSG_SCALE_OUT_COMPLETE_REPLY = 20221015;
 
 }

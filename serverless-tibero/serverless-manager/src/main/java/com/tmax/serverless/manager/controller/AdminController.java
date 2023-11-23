@@ -11,10 +11,10 @@ import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroupReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleIn;
+import com.tmax.serverless.core.message.admin.AdminMsgScaleInComplete;
+import com.tmax.serverless.core.message.admin.AdminMsgScaleInCompleteReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleInReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleOut;
-import com.tmax.serverless.core.message.admin.AdminMsgScaleOutComplete;
-import com.tmax.serverless.core.message.admin.AdminMsgScaleOutCompleteReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleOutReply;
 import com.tmax.serverless.manager.service.PoolManagementService;
 import io.netty.channel.ChannelHandlerContext;
@@ -53,20 +53,6 @@ public class AdminController {
     return res;
   }
 
-  @ServerlessMessageMapping(AdminMsgScaleIn.class)
-  public AdminMsgScaleInReply scaleInDBInstance(
-      ChannelHandlerContext ctx, AdminMsgScaleIn req) {
-    log.info("scaleInDBInstance: {}", req);
-
-    boolean result = poolManagementService.scaleInDB(req.getAlias());
-    AdminMsgScaleInReply res = AdminMsgScaleInReply.builder()
-        .returnCode(result ? SUCCESS : FAIL)
-        .build();
-
-    log.info("{}", res);
-    return res;
-  }
-
   @ServerlessMessageMapping(AdminMsgScaleOut.class)
   public AdminMsgScaleOutReply scaleOutDBInstance(
       ChannelHandlerContext ctx, AdminMsgScaleOut req) {
@@ -82,14 +68,28 @@ public class AdminController {
     return res;
   }
 
-  @ServerlessMessageMapping(AdminMsgScaleOutComplete.class)
-  public AdminMsgScaleOutCompleteReply scaleOutCompleteDBInstance(
-      ChannelHandlerContext ctx, AdminMsgScaleOutComplete req) {
-    log.info("scaleOutCompleteDBInstance: {}", req);
+  @ServerlessMessageMapping(AdminMsgScaleIn.class)
+  public AdminMsgScaleInReply scaleInDBInstance(
+      ChannelHandlerContext ctx, AdminMsgScaleIn req) {
+    log.info("scaleInDBInstance: {}", req);
+
+    boolean result = poolManagementService.scaleInDB(req.getAlias());
+    AdminMsgScaleInReply res = AdminMsgScaleInReply.builder()
+        .returnCode(result ? SUCCESS : FAIL)
+        .build();
+
+    log.info("{}", res);
+    return res;
+  }
+
+  @ServerlessMessageMapping(AdminMsgScaleInComplete.class)
+  public AdminMsgScaleInCompleteReply scaleInCompleteDBInstance(
+      ChannelHandlerContext ctx, AdminMsgScaleInComplete req) {
+    log.info("scaleInCompleteDBInstance: {}", req);
 
     boolean result = poolManagementService.makeDBWarmUp(req.getAlias());
 
-    AdminMsgScaleOutCompleteReply res = AdminMsgScaleOutCompleteReply.builder()
+    AdminMsgScaleInCompleteReply res = AdminMsgScaleInCompleteReply.builder()
         .returnCode(result ? SUCCESS : FAIL)
         .build();
 
