@@ -159,8 +159,8 @@ public class PoolManagementService {
     return kubernetesManagementService.executeLBCommand(alias, LBExecuteCommand.ActiveDB);
   }
 
-    public boolean scaleInDB(String alias) {
-      log.info("scaleInDB alias:" + alias);
+  public boolean scaleInDB(String alias) {
+    log.info("scaleInDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
     log.info("Start to scale-in db : " + alias);
@@ -193,7 +193,7 @@ public class PoolManagementService {
       return false;
     }
 
-    if(!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
       log.info("Fail to move DB from ActiveCold to WarmUp");
       return false;
     }
