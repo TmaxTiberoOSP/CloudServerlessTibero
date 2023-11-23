@@ -19,6 +19,7 @@ public class DBInstance {
   private int port;
   private String dbUser;
   private String dbPassword;
+  private String podName;
   private DBServerlessMode mode;
 
   public static Integer getNewId() {

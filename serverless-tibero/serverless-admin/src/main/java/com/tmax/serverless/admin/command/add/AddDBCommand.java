@@ -57,6 +57,12 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
   private String dbPassword;
 
   @Option(
+      names = {"--pod-name"},
+      description = "Name of DB Pod",
+      required = true)
+  private String podName;
+
+  @Option(
       names = {"-m", "--mode"},
       completionCandidates = DBServerlessModeOption.Candidates.class,
       converter = DBServerlessModeOption.Converter.class,
@@ -80,6 +86,7 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
         .port(port)
         .dbUser(dbUser)
         .dbPassword(dbPassword)
+        .podName(podName)
         .mode(mode)
         .build();
     log.info("req msg: " + req);

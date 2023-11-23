@@ -41,6 +41,7 @@ public class PoolManagementService {
     int port = req.getPort();
     String dbUser = req.getDbUser();
     String dbPassword = req.getDbPassword();
+    String podName = req.getPodName();
     DBServerlessMode mode = req.getMode();
 
     Map<String, DBInstance> pool;
@@ -55,6 +56,7 @@ public class PoolManagementService {
         .port(port)
         .dbUser(dbUser)
         .dbPassword(dbPassword)
+        .podName(podName)
         .mode(mode)
         .build();
 

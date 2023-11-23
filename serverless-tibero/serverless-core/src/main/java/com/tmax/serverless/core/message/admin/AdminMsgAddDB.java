@@ -21,13 +21,14 @@ public class AdminMsgAddDB extends JsonMessage {
   private int port;
   private String dbUser;
   private String dbPassword;
+  private String podName;
   private DBServerlessMode mode;
 
   public AdminMsgAddDB(RegularMessage header) { super(header); }
 
   @Builder
   public AdminMsgAddDB(String dbName, String alias, String ip, int port,
-      String dbUser, String dbPassword, DBServerlessMode mode) {
+      String dbUser, String dbPassword, String podName, DBServerlessMode mode) {
     super(ADMIN_MSG_ADD_DB);
 
     this.dbName = dbName;
@@ -36,6 +37,7 @@ public class AdminMsgAddDB extends JsonMessage {
     this.port = port;
     this.dbUser = dbUser;
     this.dbPassword = dbPassword;
+    this.podName = podName;
     this.mode = mode;
   }
 
