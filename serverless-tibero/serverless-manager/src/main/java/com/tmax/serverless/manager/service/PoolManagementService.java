@@ -2,7 +2,6 @@ package com.tmax.serverless.manager.service;
 
 import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Service;
-import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.core.context.DBExecuteCommand;
 import com.tmax.serverless.core.context.DBServerlessMode;
 import com.tmax.serverless.core.context.LBExecuteCommand;
@@ -13,10 +12,6 @@ import com.tmax.serverless.manager.context.DBInstancePool;
 import com.tmax.serverless.manager.service.k8s.KubernetesManagementService;
 import com.tmax.serverless.manager.service.sysmaster.SysMasterService;
 import java.util.ArrayList;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +34,7 @@ public class PoolManagementService {
 
   /* 완전히 새로운 DB를 Pool에 추가*/
   public synchronized boolean addDBtoInstancePool(AdminMsgAddDB req) {
+    log.info("addDBtoInstancePool req: {}", req);
     String dbName = req.getDbName();
     String alias = req.getAlias();
     String ip = req.getIp();
@@ -85,6 +81,7 @@ public class PoolManagementService {
   }
 
   public boolean addGroupForMonitoring(AdminMsgAddGroup req) {
+    log.info("addGroupForMonitoring req: {}", req);
     String groupName = req.getGroupName();
     ArrayList<String> monitoringList = new ArrayList<>();
     Map<String, DBInstance> pool;
@@ -106,6 +103,7 @@ public class PoolManagementService {
 
     /* Pool사이에서의 DB Instance 이동 */
   public boolean moveDBtoAnotherPool(String alias, DBServerlessMode sourceMode, DBServerlessMode targetMode) {
+    log.info("moveDBtoAnotherPool alias:" + alias + ", sourceMode:" + sourceMode + ", targetMode:" + targetMode);
     Map<String, DBInstance> sourcePool;
     Map<String, DBInstance> targetPool;
     DBInstance moveDBInstance;
@@ -130,6 +128,7 @@ public class PoolManagementService {
   }
 
   public boolean scaleOutDB(String alias) {
+    log.info("scaleOutDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
     Map.Entry<String, DBInstance> dbInstanceEntry;
     boolean result=false;
@@ -161,6 +160,7 @@ public class PoolManagementService {
   }
 
     public boolean scaleInDB(String alias) {
+      log.info("scaleInDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
 
     log.info("Start to scale-in db : " + alias);
@@ -184,6 +184,7 @@ public class PoolManagementService {
   }
 
   public boolean makeDBWarmUp(String alias) {
+    log.info("makeDBWarmUp alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveColdDBPool();
 
     log.info("Start to make db WarmUp : " + alias);

@@ -1,13 +1,12 @@
 package com.tmax.serverless.manager;
 
 import com.tmax.serverless.core.Client;
-import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Component;
 import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.core.handler.TbMessageHandler;
 import com.tmax.serverless.core.handler.codec.JsonMessageEncoder;
 import com.tmax.serverless.core.handler.codec.TbMessageDecoder;
-import com.tmax.serverless.manager.service.k8s.KubernetesManagementService;
+import io.kubernetes.client.openapi.ApiException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -15,8 +14,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
-import io.kubernetes.client.openapi.ApiException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +36,8 @@ public class ServerlessManager {
   private boolean isMonitoring = false;
   private String monitoringGroupName;
 
-  @Autowired
-  KubernetesManagementService kubernetesManagementService;
+//  @Autowired
+//  KubernetesManagementService kubernetesManagementService;
 
   public void init() {
 
@@ -48,6 +45,7 @@ public class ServerlessManager {
 
   public void run() throws InterruptedException, URISyntaxException, IOException, ApiException, InterruptedException {
     //kubernetesManagementService.init();
+    log.info("Serverless Manager Netty Server configuration start.");
     ServerBootstrap serverBootstrap = new ServerBootstrap()
         .group(listenerGroup, workerGroup)
         // TODO: EpollServerSocketChannel(Linux only) 사용 논의 필요

@@ -10,10 +10,6 @@ import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroupReply;
-import com.tmax.serverless.core.message.admin.AdminMsgBootDB;
-import com.tmax.serverless.core.message.admin.AdminMsgBootDBReply;
-import com.tmax.serverless.core.message.admin.AdminMsgDownDB;
-import com.tmax.serverless.core.message.admin.AdminMsgDownDBReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleIn;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleInReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleOut;
@@ -22,7 +18,6 @@ import com.tmax.serverless.core.message.admin.AdminMsgScaleOutCompleteReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleOutReply;
 import com.tmax.serverless.manager.service.PoolManagementService;
 import io.netty.channel.ChannelHandlerContext;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,7 +28,7 @@ public class AdminController {
 
   @ServerlessMessageMapping(AdminMsgAddDB.class)
   public AdminMsgAddDBReply addDBInstance(ChannelHandlerContext ctx, AdminMsgAddDB req) {
-    log.info("{}", req);
+    log.info("addDBInstance: {}", req);
 
     boolean result = poolManagementService.addDBtoInstancePool(req);
     AdminMsgAddDBReply res = AdminMsgAddDBReply.builder()
@@ -47,7 +42,7 @@ public class AdminController {
   @ServerlessMessageMapping(AdminMsgAddGroup.class)
   public AdminMsgAddGroupReply addGroupForMonitoring(
       ChannelHandlerContext ctx, AdminMsgAddGroup req) {
-    log.info("{}", req);
+    log.info("addGroupForMonitoring: {}", req);
 
     boolean result = poolManagementService.addGroupForMonitoring(req);
     AdminMsgAddGroupReply res = AdminMsgAddGroupReply.builder()
@@ -61,7 +56,7 @@ public class AdminController {
   @ServerlessMessageMapping(AdminMsgScaleIn.class)
   public AdminMsgScaleInReply scaleInDBInstance(
       ChannelHandlerContext ctx, AdminMsgScaleIn req) {
-    log.info("{}", req);
+    log.info("scaleInDBInstance: {}", req);
 
     boolean result = poolManagementService.scaleInDB(req.getAlias());
     AdminMsgScaleInReply res = AdminMsgScaleInReply.builder()
@@ -75,7 +70,7 @@ public class AdminController {
   @ServerlessMessageMapping(AdminMsgScaleOut.class)
   public AdminMsgScaleOutReply scaleOutDBInstance(
       ChannelHandlerContext ctx, AdminMsgScaleOut req) {
-    log.info("{}", req);
+    log.info("scaleOutDBInstance: {}", req);
 
     boolean result = poolManagementService.scaleOutDB(req.getAlias());
 
@@ -90,7 +85,7 @@ public class AdminController {
   @ServerlessMessageMapping(AdminMsgScaleOutComplete.class)
   public AdminMsgScaleOutCompleteReply scaleOutCompleteDBInstance(
       ChannelHandlerContext ctx, AdminMsgScaleOutComplete req) {
-    log.info("{}", req);
+    log.info("scaleOutCompleteDBInstance: {}", req);
 
     boolean result = poolManagementService.makeDBWarmUp(req.getAlias());
 
