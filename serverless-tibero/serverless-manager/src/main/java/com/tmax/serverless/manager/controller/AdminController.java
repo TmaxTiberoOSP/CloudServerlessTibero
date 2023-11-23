@@ -63,12 +63,7 @@ public class AdminController {
       ChannelHandlerContext ctx, AdminMsgScaleIn req) {
     log.info("{}", req);
 
-    boolean result = false;
-    try {
-      result = poolManagementService.scaleInDB(req.getAlias());
-    } catch (IOException e) {
-      log.info("ScaleInDB Fail. IOException.");
-    }
+    boolean result = poolManagementService.scaleInDB(req.getAlias());
     AdminMsgScaleInReply res = AdminMsgScaleInReply.builder()
         .returnCode(result ? SUCCESS : FAIL)
         .build();
@@ -82,12 +77,8 @@ public class AdminController {
       ChannelHandlerContext ctx, AdminMsgScaleOut req) {
     log.info("{}", req);
 
-    boolean result = false;
-    try {
-      result = poolManagementService.scaleOutDB(req.getAlias());
-    } catch (IOException e) {
-      log.info("ScaleOutDB Fail. IOException.");
-    }
+    boolean result = poolManagementService.scaleOutDB(req.getAlias());
+
     AdminMsgScaleOutReply res = AdminMsgScaleOutReply.builder()
         .returnCode(result ? SUCCESS : FAIL)
         .build();
@@ -101,12 +92,8 @@ public class AdminController {
       ChannelHandlerContext ctx, AdminMsgScaleOutComplete req) {
     log.info("{}", req);
 
-    boolean result = false;
-    try {
-      result = poolManagementService.makeDBWarmUp(req.getAlias());
-    } catch (IOException e) {
-      log.info("ScaleOutCompleteDB Fail. IOException.");
-    }
+    boolean result = poolManagementService.makeDBWarmUp(req.getAlias());
+
     AdminMsgScaleOutCompleteReply res = AdminMsgScaleOutCompleteReply.builder()
         .returnCode(result ? SUCCESS : FAIL)
         .build();
