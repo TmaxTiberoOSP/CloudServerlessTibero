@@ -136,22 +136,27 @@ public class PoolManagementService {
 
   public boolean scaleOutDB(String alias) {
     log.info("scaleOutDB alias:" + alias);
-    Map<String, DBInstance> activecoldDBPool = dbInstancePool.getActiveColdDBPool();
-    Map<String, DBInstance> warmupDBPool = dbInstancePool.getWarmUpDBPool();
+    Map<String, DBInstance> activeColdDBPool = dbInstancePool.getActiveColdDBPool();
+    Map<String, DBInstance> warmUpDBPool = dbInstancePool.getWarmUpDBPool();
     boolean result=false;
     DBInstance dbInstance;
 
-    if (activecoldDBPool.isEmpty() && warmupDBPool.isEmpty()) {
+    if (activeColdDBPool.isEmpty() && warmUpDBPool.isEmpty()) {
       log.info("The Instance Pool is empty.");
       return false;
     }
 
-    dbInstance = activecoldDBPool.get(alias);
-    if (dbInstance == null) {
-      dbInstance = warmupDBPool.get(alias);
+    log.info("Start to scale out db : " + alias);
+
+    /*ToDo : 구조가 갑자기 바뀌면서 급히 수정하느라 코드가 엉성해짐. 리팩토링 필요*/
+
+    if (!activeColdDBPool.containsKey((alias))) {
+      dbInstance = warmUpDBPool.get(alias);
+    }
+    else {
+       dbInstance = activeColdDBPool.get(alias);
     }
 
-    log.info("Start to scale out db : " + alias);
     if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.Active)) {
       if (!moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp ,DBServerlessMode.Active)) {
         log.info("Fail to move DB from WarmUp to Active");
@@ -172,7 +177,6 @@ public class PoolManagementService {
   }
 
   public boolean scaleInDB(String alias) {
-    log.info("scaleInDB alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveDBPool();
     DBInstance dbInstance;
 
@@ -199,7 +203,6 @@ public class PoolManagementService {
   }
 
   public boolean makeDBWarmUp(String alias) {
-    log.info("makeDBWarmUp alias:" + alias);
     Map<String, DBInstance> pool = dbInstancePool.getActiveColdDBPool();
     DBInstance dbInstance;
 
