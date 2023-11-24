@@ -60,13 +60,11 @@ public class PoolManagementService {
         .mode(mode)
         .build();
 
-    /*
     if (!sysMasterService.addDBToSysMaster(newDBInstance)) {
       log.info("Fail to add new DB Instance(%s) to SysMaster!", alias);
       DBInstance.decreaseId();
       return false;
     }
-    */
 
     switch (mode) {
       case Active:
@@ -99,10 +97,8 @@ public class PoolManagementService {
       monitoringList.add(entry.getValue().getId().toString());
     }
 
-    /*
     if (!sysMasterService.addGroupToSysMaster(groupName, monitoringList))
       return false;
-    */
 
     pool = dbInstancePool.getWarmUpDBPool();
     for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
