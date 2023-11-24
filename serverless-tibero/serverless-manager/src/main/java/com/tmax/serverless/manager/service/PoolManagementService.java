@@ -95,16 +95,14 @@ public class PoolManagementService {
     pool = dbInstancePool.getWarmUpDBPool();
     for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
       monitoringList.add(entry.getValue().getId().toString());
+      if(!kubernetesManagementService.executeDBCommand(entry.getValue(), DBExecuteCommand.Down)) {
+        log.info("WarmUp DB initialize fail : DB Down", entry.getValue().getAlias());
+        return false;
+      }
     }
 
     if (!sysMasterService.addGroupToSysMaster(groupName, monitoringList))
       return false;
-
-    pool = dbInstancePool.getWarmUpDBPool();
-    for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
-      if(!kubernetesManagementService.executeDBCommand(entry.getValue(), DBExecuteCommand.Down))
-        log.info("WarmUp DB initialize fail : DB Down", entry.getValue().getAlias());
-    }
 
     return true;
   }
