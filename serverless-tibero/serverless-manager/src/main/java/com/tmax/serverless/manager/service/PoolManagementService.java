@@ -104,6 +104,12 @@ public class PoolManagementService {
       return false;
     */
 
+    pool = dbInstancePool.getWarmUpDBPool();
+    for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
+      if(!kubernetesManagementService.executeDBCommand(entry.getValue(), DBExecuteCommand.Down))
+        log.info("WarmUp DB initialize fail : DB Down", entry.getValue().getAlias());
+    }
+
     return true;
   }
 
