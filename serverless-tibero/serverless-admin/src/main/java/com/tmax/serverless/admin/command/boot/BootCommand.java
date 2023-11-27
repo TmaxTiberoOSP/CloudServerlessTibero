@@ -8,7 +8,7 @@ import picocli.CommandLine.Command;
     synopsisSubcommandLabel = "(Manager)",
     subcommands = {
         // BootDBCommand.class
-        BootManagerCommand.class
+        //BootManagerCommand.class
     },
     description = "boot Manager\n")
 public class BootCommand extends SuperCommand {
