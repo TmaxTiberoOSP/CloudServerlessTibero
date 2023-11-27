@@ -5,11 +5,12 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "boot",
-    synopsisSubcommandLabel = "(DB)",
+    synopsisSubcommandLabel = "(Manager)",
     subcommands = {
-        BootDBCommand.class
+        // BootDBCommand.class
+        BootManagerCommand.class
     },
-    description = "boot db\n")
+    description = "boot Manager\n")
 public class BootCommand extends SuperCommand {
 
 }

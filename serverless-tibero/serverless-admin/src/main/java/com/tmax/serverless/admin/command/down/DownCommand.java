@@ -6,7 +6,7 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "down",
-    synopsisSubcommandLabel = "(MANAGER)",
+    synopsisSubcommandLabel = "(Manager)",
     subcommands = {
         //DownDBCommand.class,
         DownManagerCommand.class

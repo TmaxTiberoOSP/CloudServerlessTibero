@@ -81,6 +81,7 @@ public class ServerlessManager {
     } catch (ExecutionException e) {
       throw new RuntimeException("ExecutionException occurs!");
     } finally {
+      Thread.sleep(3000); // Admin에게 shutdown 완료 msg 송신되는 시간 감안.
       close();
     }
   }
