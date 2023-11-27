@@ -4,16 +4,16 @@
     <Console name="console" target="SYSTEM_OUT">
       <PatternLayout pattern="[%d{HH:mm:ss.SSS}] %-5level [%thread] %C{100} %M - %msg%n"/>
     </Console>
-    <RollingFile fileName="${env:TB_HOME}/instance/serverless/sys/netty.log"
-      filePattern="${env:TB_HOME}/instance/serverless/sys/%d{yyyy_MM_dd}/netty.log"
+    <RollingFile fileName="${env:SM_HOME}/instance/serverless/sys/netty.log"
+      filePattern="${env:SM_HOME}/instance/serverless/sys/%d{yyyy_MM_dd}/netty.log"
       name="netty">
       <PatternLayout pattern="[%d{HH:mm:ss.SSS}] %-5level [%thread] %C{100} %M - %msg%n"/>
       <Policies>
         <TimeBasedTriggeringPolicy/>
       </Policies>
     </RollingFile>
-    <RollingFile fileName="${env:TB_HOME}/instance/serverless/sys/serverless.log"
-      filePattern="${env:TB_HOME}/instance/serverless/sys/%d{yyyy_MM_dd}/serverless.log"
+    <RollingFile fileName="${env:SM_HOME}/instance/serverless/sys/serverless.log"
+      filePattern="${env:SM_HOME}/instance/serverless/sys/%d{yyyy_MM_dd}/serverless.log"
       name="serverless">
       <PatternLayout pattern="[%d{HH:mm:ss.SSS}] %-5level [%thread] %C{100} %M - %msg%n"/>
       <Policies>

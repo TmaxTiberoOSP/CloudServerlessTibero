@@ -1,10 +1,4 @@
 serverless:
-  manager:
-    host: ${LOCAL_IP:-localhost}
-    port: ${LOCAL_PORT:-2424}
   sysmaster:
-    host: ${SYSMASTER_IP:-localhost}
-    port: ${SYSMASTER_PORT:-2525}
-    url: http://${serverless.sysmaster.host}:${serverless.sysmaster.port}/api/resources
     type: ${MONITORING_TYPE:-"TIBERO"}
     color: ${MONITORING_COLOR:-"#2979FF"}

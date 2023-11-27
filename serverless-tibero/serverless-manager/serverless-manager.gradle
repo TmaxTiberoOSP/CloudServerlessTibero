@@ -2,7 +2,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-def TB_HOME = System.getenv("TB_HOME")
+def SM_HOME = System.getenv("SM_HOME")
 
 description = 'Serverless Tibero Manager'
 version = '1.0'
@@ -27,10 +27,10 @@ configurations {
 }
 
 task copyExternalLib(type: Copy) {
-    description "copy External Library into ${TB_HOME}/bin/jar/serverless/lib"
+    description "copy External Library into ${SM_HOME}/bin/jar/serverless/lib"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from configurations.externalLib {
-        into "${TB_HOME}/bin/jar/serverless/lib"
+        into "${SM_HOME}/bin/jar/serverless/lib"
     }
 }
 
@@ -48,7 +48,7 @@ task release(type: Copy, dependsOn: ['shadowJar', 'copyExternalLib']) {
     description "release ${it.project.name}"
     println description
     from 'build/libs'
-    into "${TB_HOME}/bin/jar/serverless/manager"
+    into "${SM_HOME}/bin/jar/serverless/manager"
 }
 
 

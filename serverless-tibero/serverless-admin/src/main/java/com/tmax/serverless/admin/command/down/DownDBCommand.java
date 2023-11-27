@@ -4,7 +4,6 @@ import static com.tmax.serverless.admin.utils.ConsoleColors.Styles.BOLD;
 
 import com.tmax.serverless.admin.command.CallableSubCommand;
 import com.tmax.serverless.admin.utils.ConsoleColors;
-import com.tmax.serverless.core.message.admin.AdminMsgBootDB;
 import com.tmax.serverless.core.message.admin.AdminMsgDownDB;
 import com.tmax.serverless.core.message.admin.AdminMsgDownDBReply;
 import lombok.extern.slf4j.Slf4j;

@@ -1,11 +1,12 @@
 package com.tmax.serverless.admin.command;
 
+import static com.tmax.serverless.core.config.ServerlessConst.SM_IP;
+import static com.tmax.serverless.core.config.ServerlessConst.SM_PORT;
+
 import com.tmax.serverless.admin.Global;
 import com.tmax.serverless.admin.cli.LogLevelOption.Candidates;
 import com.tmax.serverless.admin.cli.LogLevelOption.Converter;
 import com.tmax.serverless.admin.command.add.AddCommand;
-import com.tmax.serverless.admin.command.boot.BootCommand;
-import com.tmax.serverless.admin.command.delete.DeleteCommand;
 import com.tmax.serverless.admin.command.down.DownCommand;
 import com.tmax.serverless.admin.command.scale.ScaleCommand;
 import com.tmax.serverless.core.Client;
@@ -31,7 +32,7 @@ import picocli.CommandLine.Spec;
         //DeleteCommand.class,
         ScaleCommand.class,
         //BootCommand.class,
-        //DownCommand.class
+        DownCommand.class
     })
 public class MainCommand implements Runnable {
 
@@ -48,12 +49,12 @@ public class MainCommand implements Runnable {
   @Option(
       names = {"-h", "--host"},
       description = "Tibero Serverless Manager IP address (default: ${DEFAULT-VALUE})")
-  private String host = "127.0.0.1";
+  private String host = SM_IP;
 
   @Option(
       names = {"-p", "--port"},
       description = "Tibero Serverless Port (default: ${DEFAULT-VALUE})")
-  private int port = 2424;
+  private int port = SM_PORT;
 
   public String getFeAddress() {
     return host + ":" + port;
@@ -73,7 +74,7 @@ public class MainCommand implements Runnable {
 
     try {
       /* initialization logger */
-      String path = ServerlessConst.TB_HOME + "/instance/serverless/admin/";
+      String path = ServerlessConst.SM_HOME + "/instance/serverless/admin/";
       String filename = path + "/admin.log";
       String filePattern = path + Logger.DEFAULT_DATE_PATTERN + "/admin.log";
 

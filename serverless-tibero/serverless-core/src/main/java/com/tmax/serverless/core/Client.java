@@ -160,37 +160,36 @@ public class Client implements PropertyChangeListener {
       return client;
     }
 
-    public Client sysMasterBuild() throws URISyntaxException {
-      Client client = init();
-
-      URI uri = new URI("ws://" + client.host + ":" + client.port);
-
-      final WebSocketClientHandler handler =
-          new WebSocketClientHandler(
-              WebSocketClientHandshakerFactory.newHandshaker(
-                  uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
-
-      client.eventLoop = new NioEventLoopGroup(client.nThreads);
-      client.bootstrap = new Bootstrap()
-          .group(client.eventLoop)
-          .remoteAddress(client.host, client.port)
-          .channel(NioSocketChannel.class)
-          .handler(new ChannelInitializer<>() {
-            @Override
-            protected void initChannel(@NotNull Channel ch) {
-              ch.attr(WS_HANDLER).set(handler);
-              ch.pipeline()
-                  .addLast(
-                      new HttpClientCodec(),
-                      new HttpObjectAggregator(64 * 1024),
-                      WebSocketClientCompressionHandler.INSTANCE)
-                  .addLast(WebSocketClientHandler.class.getName(), handler);
-            }
-          });
-
-      return client;
-
-    }
+//    public Client sysMasterBuild() throws URISyntaxException {
+//      Client client = init();
+//
+//      URI uri = new URI("ws://" + client.host + ":" + client.port);
+//
+//      final WebSocketClientHandler handler =
+//          new WebSocketClientHandler(
+//              WebSocketClientHandshakerFactory.newHandshaker(
+//                  uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+//
+//      client.eventLoop = new NioEventLoopGroup(client.nThreads);
+//      client.bootstrap = new Bootstrap()
+//          .group(client.eventLoop)
+//          .remoteAddress(client.host, client.port)
+//          .channel(NioSocketChannel.class)
+//          .handler(new ChannelInitializer<>() {
+//            @Override
+//            protected void initChannel(@NotNull Channel ch) {
+//              ch.attr(WS_HANDLER).set(handler);
+//              ch.pipeline()
+//                  .addLast(
+//                      new HttpClientCodec(),
+//                      new HttpObjectAggregator(64 * 1024),
+//                      WebSocketClientCompressionHandler.INSTANCE)
+//                  .addLast(WebSocketClientHandler.class.getName(), handler);
+//            }
+//          });
+//
+//      return client;
+//    }
 
   }
 }

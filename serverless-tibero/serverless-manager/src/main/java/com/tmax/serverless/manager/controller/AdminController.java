@@ -10,6 +10,8 @@ import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroupReply;
+import com.tmax.serverless.core.message.admin.AdminMsgDownManager;
+import com.tmax.serverless.core.message.admin.AdminMsgDownManagerReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleIn;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleInComplete;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleInCompleteReply;
@@ -17,12 +19,15 @@ import com.tmax.serverless.core.message.admin.AdminMsgScaleInReply;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleOut;
 import com.tmax.serverless.core.message.admin.AdminMsgScaleOutReply;
 import com.tmax.serverless.manager.service.PoolManagementService;
+import com.tmax.serverless.manager.service.SystemService;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 public class AdminController {
+  @Autowired
+  SystemService systemService;
   @Autowired
   PoolManagementService poolManagementService;
 
@@ -96,6 +101,21 @@ public class AdminController {
     log.info("{}", res);
     return res;
   }
+
+  @ServerlessMessageMapping(AdminMsgDownManager.class)
+  public AdminMsgDownManagerReply downManager(
+      ChannelHandlerContext ctx, AdminMsgDownManager req) {
+    log.info("downManager: {}", req);
+
+    systemService.shutdownManager();
+    AdminMsgDownManagerReply res = AdminMsgDownManagerReply.builder()
+        .returnCode(SUCCESS)
+        .build();
+
+    log.info("{}", res);
+    return res;
+  }
+
 
 //  @ServerlessMessageMapping(AdminMsgBootDB.class)
 //  public AdminMsgBootDBReply bootDBInstance(

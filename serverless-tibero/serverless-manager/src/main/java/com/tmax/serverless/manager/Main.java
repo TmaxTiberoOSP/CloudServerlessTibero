@@ -16,6 +16,7 @@ public class Main {
 
       serverlessManager.init();
       serverlessManager.run();
+      log.info("Tibero Serverless Manager Shutdown!");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

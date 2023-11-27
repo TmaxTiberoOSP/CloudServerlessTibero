@@ -6,11 +6,12 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "down",
-    synopsisSubcommandLabel = "(DB)",
+    synopsisSubcommandLabel = "(MANAGER)",
     subcommands = {
-        BootDBCommand.class
+        //DownDBCommand.class,
+        DownManagerCommand.class
     },
-    description = "down db\n")
+    description = "down Manager\n")
 public class DownCommand extends SuperCommand {
 
 }

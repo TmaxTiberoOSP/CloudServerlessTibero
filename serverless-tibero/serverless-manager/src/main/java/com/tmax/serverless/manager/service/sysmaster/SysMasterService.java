@@ -1,5 +1,7 @@
 package com.tmax.serverless.manager.service.sysmaster;
 
+import static com.tmax.serverless.core.config.ServerlessConst.SYS_MASTER_URL;
+
 import com.tmax.serverless.core.annotation.Service;
 import com.tmax.serverless.core.annotation.Value;
 import com.tmax.serverless.manager.context.DBInstance;
@@ -19,8 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 @Service
 public class SysMasterService {
-  @Value("serverless.sysmaster.url")
-  private String sysMasterUri;
+  private String sysMasterUri = SYS_MASTER_URL;
   @Value("serverless.sysmaster.type")
   private String monitoringType;
   @Value("serverless.sysmaster.color")
