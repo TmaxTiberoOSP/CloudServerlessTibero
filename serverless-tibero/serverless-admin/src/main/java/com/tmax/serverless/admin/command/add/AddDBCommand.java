@@ -27,6 +27,12 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
   private String dbName;
 
   @Option(
+      names = {"--id"},
+      description = "DB Instance id",
+      required = true)
+  private String id;
+
+  @Option(
       names = {"--alias"},
       description = "DB Instance alias",
       required = true)
@@ -63,7 +69,7 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
   private String podName;
 
   @Option(
-      names = {"-m", "--mode"},
+      names = {"--mode"},
       completionCandidates = DBServerlessModeOption.Candidates.class,
       converter = DBServerlessModeOption.Converter.class,
       description = "DB Serverless Mode\n"
@@ -81,6 +87,7 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
     log.info("{}", this);
     AdminMsgAddDB req = AdminMsgAddDB.builder()
         .dbName(dbName)
+        .id(id)
         .alias(alias)
         .ip(ip)
         .port(port)
@@ -93,8 +100,9 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
     return send(req,
         (ctx, res) -> {
           log.info("AddDBCommand result: {}", res);
-          printResult(res, String.format("add DB(%s) on %s mode",
+          printResult(res, String.format("add DB(%s:%s) on %s mode",
               ConsoleColors.set(alias, Styles.BOLD),
+              ConsoleColors.set(id, Styles.BOLD),
               mode.toString()));
         });
   }

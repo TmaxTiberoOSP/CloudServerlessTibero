@@ -7,6 +7,8 @@ public class ServerlessConst {
   public static final String SYS_MASTER_IP;
   public static final Integer SYS_MASTER_PORT;
   public static final String SYS_MASTER_URL;
+  public static final String SYS_MASTER_DB_TYPE = "TIBERO";
+  public static final String SYS_MASTER_DB_COLOR = "#2979FF";
   public static final String PACKAGE_GROUP_NAME = "com.tmax.serverless";
 
   static {

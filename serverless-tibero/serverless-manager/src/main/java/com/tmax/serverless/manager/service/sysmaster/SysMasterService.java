@@ -1,5 +1,7 @@
 package com.tmax.serverless.manager.service.sysmaster;
 
+import static com.tmax.serverless.core.config.ServerlessConst.SYS_MASTER_DB_COLOR;
+import static com.tmax.serverless.core.config.ServerlessConst.SYS_MASTER_DB_TYPE;
 import static com.tmax.serverless.core.config.ServerlessConst.SYS_MASTER_URL;
 
 import com.tmax.serverless.core.annotation.Service;
@@ -22,10 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class SysMasterService {
   private String sysMasterUri = SYS_MASTER_URL;
-  @Value("serverless.sysmaster.type")
-  private String monitoringType;
-  @Value("serverless.sysmaster.color")
-  private String monitoringColor;
+  private String monitoringType = SYS_MASTER_DB_TYPE;
+  private String monitoringColor = SYS_MASTER_DB_COLOR;
 
   public boolean addDBToSysMaster(DBInstance newDB) {
     SysMasterAddDBReq req = SysMasterAddDBReq.builder()

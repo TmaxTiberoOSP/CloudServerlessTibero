@@ -10,9 +10,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DBInstance {
-  private static AtomicInteger dbId = new AtomicInteger();
-
-  private Integer id;
+  private String id;
   private String dbName;
   private String alias;
   private String ip;
@@ -21,14 +19,5 @@ public class DBInstance {
   private String dbPassword;
   private String podName;
   private DBServerlessMode mode;
-
-  public static Integer getNewId() {
-    return dbId.incrementAndGet();
-  }
-
-  public static Integer decreaseId() {
-    return dbId.decrementAndGet();
-  }
-
 
 }

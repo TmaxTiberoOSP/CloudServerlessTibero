@@ -36,6 +36,7 @@ public class PoolManagementService {
   public synchronized boolean addDBtoInstancePool(AdminMsgAddDB req) {
     log.info("addDBtoInstancePool req: {}", req);
     String dbName = req.getDbName();
+    String id = req.getId();
     String alias = req.getAlias();
     String ip = req.getIp();
     int port = req.getPort();
@@ -49,7 +50,7 @@ public class PoolManagementService {
       return false;
 
     DBInstance newDBInstance = DBInstance.builder()
-        .id(DBInstance.getNewId())
+        .id(id)
         .dbName(dbName)
         .alias(alias)
         .ip(ip)
@@ -62,7 +63,6 @@ public class PoolManagementService {
 
     if (!sysMasterService.addDBToSysMaster(newDBInstance)) {
       log.info("Fail to add new DB Instance(%s) to SysMaster!", alias);
-      DBInstance.decreaseId();
       return false;
     }
 

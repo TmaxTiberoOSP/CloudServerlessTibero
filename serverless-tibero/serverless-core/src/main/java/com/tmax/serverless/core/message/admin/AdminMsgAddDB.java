@@ -16,6 +16,7 @@ import lombok.ToString;
 public class AdminMsgAddDB extends JsonMessage {
 
   private String dbName;
+  private String id;
   private String alias;
   private String ip;
   private int port;
@@ -27,11 +28,12 @@ public class AdminMsgAddDB extends JsonMessage {
   public AdminMsgAddDB(RegularMessage header) { super(header); }
 
   @Builder
-  public AdminMsgAddDB(String dbName, String alias, String ip, int port,
+  public AdminMsgAddDB(String dbName, String id, String alias, String ip, int port,
       String dbUser, String dbPassword, String podName, DBServerlessMode mode) {
     super(ADMIN_MSG_ADD_DB);
 
     this.dbName = dbName;
+    this.id = id;
     this.alias = alias;
     this.ip = ip;
     this.port = port;

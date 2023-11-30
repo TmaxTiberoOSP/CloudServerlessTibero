@@ -1,4 +1,1 @@
 serverless:
-  sysmaster:
-    type: ${MONITORING_TYPE:-"TIBERO"}
-    color: ${MONITORING_COLOR:-"#2979FF"}
