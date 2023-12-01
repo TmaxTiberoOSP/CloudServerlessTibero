@@ -43,7 +43,7 @@ public class SysMasterService {
     String addDBUri = sysMasterUri + "/resources";
     log.info("addDBUri:" + addDBUri);
     URI uri = UriComponentsBuilder
-        .fromUriString(sysMasterUri)
+        .fromUriString(addDBUri)
         .build(false).encode().toUri();
 
     HttpHeaders headers = new HttpHeaders();
@@ -77,7 +77,7 @@ public class SysMasterService {
     String addGroupUri = sysMasterUri + "/zeta-tac-groups";
     log.info("addGroupUri:" + addGroupUri);
     URI uri = UriComponentsBuilder
-        .fromUriString(sysMasterUri)
+        .fromUriString(addGroupUri)
         .build(false).encode().toUri();
 
     HttpHeaders headers = new HttpHeaders();
