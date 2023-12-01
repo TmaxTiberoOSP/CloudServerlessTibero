@@ -40,6 +40,8 @@ public class SysMasterService {
         .userDefinedColor(monitoringColor)
         .build();
 
+    String addDBUri = sysMasterUri + "/resources";
+    log.info("addDBUri:" + addDBUri);
     URI uri = UriComponentsBuilder
         .fromUriString(sysMasterUri)
         .build(false).encode().toUri();
@@ -72,6 +74,8 @@ public class SysMasterService {
         .monitortingList(monitoringList)
         .build();
 
+    String addGroupUri = sysMasterUri + "/zeta-tac-groups";
+    log.info("addGroupUri:" + addGroupUri);
     URI uri = UriComponentsBuilder
         .fromUriString(sysMasterUri)
         .build(false).encode().toUri();
@@ -79,7 +83,8 @@ public class SysMasterService {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "debug");
     headers.setContentType(MediaType.APPLICATION_JSON);
-
+    log.info("addGroupToSysMaster req: {}", req);
+    log.info("addGroupToSysMaster req json: {}", req.toJsonBody());
     HttpEntity<String> httpEntity = new HttpEntity<>(req.toJsonBody().toString(), headers);
 
     ResponseEntity<String> responseEntity = new RestTemplate().exchange(

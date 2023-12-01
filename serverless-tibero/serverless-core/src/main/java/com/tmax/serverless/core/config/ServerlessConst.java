@@ -33,6 +33,6 @@ public class ServerlessConst {
       throw new RuntimeException("SYS_MASTER_PORT is not set");
     }
     // url: http://${serverless.sysmaster.host}:${serverless.sysmaster.port}/api/resources
-    SYS_MASTER_URL = "http://" + SYS_MASTER_IP + ":" + SYS_MASTER_PORT + "/api/resources";
+    SYS_MASTER_URL = "http://" + SYS_MASTER_IP + ":" + SYS_MASTER_PORT + "/api";
   }
 }
