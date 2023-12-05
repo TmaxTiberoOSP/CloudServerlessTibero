@@ -18,25 +18,25 @@ public class DBInstancePool {
 //  private String monitoringGroupName;
 //  private String monitoringGroupId;
 
-  public boolean isExistInDBPool(String alias) {
-    if (activeDBPool.containsKey(alias) ||
-      activeColdDBPool.containsKey(alias) ||
-        warmUpDBPool.containsKey(alias)) {
-      return true;
+    public boolean isExistInDBPool(String alias) {
+        if (activeDBPool.containsKey(alias) ||
+                activeColdDBPool.containsKey(alias) ||
+                warmUpDBPool.containsKey(alias)) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
-    switch (mode) {
-      case Active:
-        return activeDBPool;
-      case ActiveCold:
-        return activeColdDBPool;
-      case WarmUp:
-        return warmUpDBPool;
-      default:
-        return null;
+    public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
+        switch (mode) {
+            case Active:
+                return activeDBPool;
+            case ActiveCold:
+                return activeColdDBPool;
+            case WarmUp:
+                return warmUpDBPool;
+            default:
+                return null;
+        }
     }
-  }
 }
