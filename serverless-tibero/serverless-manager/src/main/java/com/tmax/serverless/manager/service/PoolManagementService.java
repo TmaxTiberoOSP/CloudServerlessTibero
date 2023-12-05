@@ -70,17 +70,19 @@ public class PoolManagementService {
       case Active:
         pool = dbInstancePool.getActiveDBPool();
         pool.put(alias, newDBInstance);
-        log.info("ActivePool:" + pool);
+        log.info("ActivePool:" + alias);
         return true;
       case WarmUp:
         pool = dbInstancePool.getWarmUpDBPool();
         pool.put(alias, newDBInstance);
-        log.info("WarmUpPool:" + pool);
+        log.info("WarmUpPool:" + alias);
         /*최초 등록된 디비가 WarmUP 데이터베이스라면, LoadBalancing 대상에서
          * 제외하고, DB를 Down 시켜준다.*/
         if(!makeDBDown(alias)) {
           pool.remove(alias);
           /* ToDo : Sysmaster 에서도 제거해주어야 함 */
+          log.info("add DB into WarmUpPool failed: " + alias);
+          return false;
         }
         return true;
       default:
