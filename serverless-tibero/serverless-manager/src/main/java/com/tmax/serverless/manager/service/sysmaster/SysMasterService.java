@@ -32,7 +32,7 @@ public class SysMasterService {
         .dbName(newDB.getDbName())
         .dbUser(newDB.getDbUser())
         .dbPassword(newDB.getDbPassword())
-        .id(newDB.getId().toString())
+        .id(newDB.getId())
         .ip(newDB.getIp())
         .port(newDB.getPort())
         .name(newDB.getAlias())
@@ -67,6 +67,45 @@ public class SysMasterService {
       return true;
   }
 
+  public boolean deleteDBFromSysMaster(DBInstance newDB) {
+    SysMasterAddDBReq req = SysMasterAddDBReq.builder()
+        .dbName(newDB.getDbName())
+        .dbUser(newDB.getDbUser())
+        .dbPassword(newDB.getDbPassword())
+        .id(newDB.getId())
+        .ip(newDB.getIp())
+        .port(newDB.getPort())
+        .name(newDB.getAlias())
+        .type(monitoringType)
+        .userDefinedColor(monitoringColor)
+        .build();
+
+    String deleteDBUri = sysMasterUri + "/resources/" + newDB.getId();
+    log.info("deleteDBUri:" + deleteDBUri);
+    URI uri = UriComponentsBuilder
+        .fromUriString(deleteDBUri)
+        .build(false).encode().toUri();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "debug");
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+    ResponseEntity<String> responseEntity = new RestTemplate().exchange(
+        uri,
+        HttpMethod.DELETE,
+        httpEntity,
+        String.class
+    );
+
+    log.info("deleteDBToSysMaster result: {}", responseEntity);
+
+    if (responseEntity.getStatusCode() != HttpStatus.OK)
+      return false;
+    else
+      return true;
+  }
 
   public boolean addGroupToSysMaster(String groupName, ArrayList<String> monitoringList) {
     SysMasterAddGroupReq req = SysMasterAddGroupReq.builder()

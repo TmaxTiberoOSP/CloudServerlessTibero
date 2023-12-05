@@ -81,6 +81,14 @@ public class PoolManagementService {
         if(!makeDBDown(alias)) {
           pool.remove(alias);
           /* ToDo : Sysmaster 에서도 제거해주어야 함 */
+
+          if (!sysMasterService.deleteDBFromSysMaster(newDBInstance)) {
+            new RuntimeException("deleteDBFromSysMaster(id:%s, alias:%s) Failed during adding DB.");
+          }
+          else {
+            log.info("Fail to down DB on (initial) WarmUp mode.");
+            return false;
+          }
         }
         return true;
       default:
