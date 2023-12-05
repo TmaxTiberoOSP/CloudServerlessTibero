@@ -42,14 +42,6 @@ public class AdminController {
             .returnCode(result ? SUCCESS : FAIL)
             .build();
 
-    /*최초 등록된 디비가 WarmUP 데이터베이스라면, LoadBalancing 대상에서
-    * 제외하고, DB를 Down 시켜준다.*/
-    if (result && req.getMode() == DBServerlessMode.WarmUp)
-      poolManagementService.makeDBDown(req.getAlias());
-    else {
-      /* ToDo : Sysmaster 에서도 제거해주어야 함 */
-    }
-
     log.info("{}", res);
     return res;
   }
