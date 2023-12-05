@@ -14,6 +14,9 @@ public class DBInstancePool {
   private final ConcurrentHashMap<String, DBInstance> activeColdDBPool = new ConcurrentHashMap<>();
   @Getter
   private final ConcurrentHashMap<String, DBInstance> warmUpDBPool = new ConcurrentHashMap<>();
+//  private boolean isMonitoring = false;
+//  private String monitoringGroupName;
+//  private String monitoringGroupId;
 
   public boolean isExistInDBPool(String alias) {
     if (activeDBPool.containsKey(alias) ||

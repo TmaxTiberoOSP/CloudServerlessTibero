@@ -36,8 +36,6 @@ public class ServerlessManager {
   private String host = SM_IP;
   private int port = SM_PORT;
   private Client client;
-  private boolean isMonitoring = false;
-  private String monitoringGroupName;
   @Getter
   @Setter
   private CompletableFuture<Integer> promise;

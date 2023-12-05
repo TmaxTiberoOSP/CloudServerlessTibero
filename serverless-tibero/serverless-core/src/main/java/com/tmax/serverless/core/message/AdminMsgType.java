@@ -23,4 +23,8 @@ public class AdminMsgType {
   public static final int ADMIN_MSG_SCALE_OUT_COMPLETE_REPLY = 20221015;
   public static final int ADMIN_MSG_DOWN_MANAGER = 20221016;
   public static final int ADMIN_MSG_DOWN_MANAGER_REPLY = 20221017;
+  public static final int ADMIN_MSG_DELETE_DB = 20221018;
+  public static final int ADMIN_MSG_DELETE_DB_REPLY = 20221019;
+  public static final int ADMIN_MSG_DELETE_GROUP = 20221020;
+  public static final int ADMIN_MSG_DELETE_GROUP_REPLY = 20221021;
 }
