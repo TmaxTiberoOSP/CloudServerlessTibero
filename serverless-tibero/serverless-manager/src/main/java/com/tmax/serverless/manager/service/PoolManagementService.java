@@ -226,4 +226,27 @@ public class PoolManagementService {
 
     return true;
   }
+
+  public boolean makeDBDown(String alias) {
+    Map<String, DBInstance> pool = dbInstancePool.getWarmUpDBPool();
+    DBInstance dbInstance;
+
+    log.info("start DB down : " + alias);
+    if (!pool.containsKey(alias)) {
+      log.info(alias + " is not in WarmUp Instance Pool");
+      return false;
+    }
+
+    dbInstance = pool.get(alias);
+
+    if (kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.StandbyDB) &&
+            kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Down)) {
+      return true;
+    }
+    /*위의 정상과정이 실패한 경우 후처리 진행
+    * TODO: 후처리 내용이 시스마스터에도 공유되어야 함서
+    *  위와 관련된 후처리는 AdminController에*/
+    pool.remove(alias);
+    return false;
+  }
 }

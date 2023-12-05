@@ -6,6 +6,8 @@ import static com.tmax.serverless.core.message.ReturnCode.SUCCESS;
 import com.tmax.serverless.core.annotation.Autowired;
 import com.tmax.serverless.core.annotation.Controller;
 import com.tmax.serverless.core.annotation.ServerlessMessageMapping;
+import com.tmax.serverless.core.context.DBExecuteCommand;
+import com.tmax.serverless.core.context.DBServerlessMode;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDB;
 import com.tmax.serverless.core.message.admin.AdminMsgAddDBReply;
 import com.tmax.serverless.core.message.admin.AdminMsgAddGroup;
@@ -39,6 +41,14 @@ public class AdminController {
     AdminMsgAddDBReply res = AdminMsgAddDBReply.builder()
             .returnCode(result ? SUCCESS : FAIL)
             .build();
+
+    /*최초 등록된 디비가 WarmUP 데이터베이스라면, LoadBalancing 대상에서
+    * 제외하고, DB를 Down 시켜준다.*/
+    if (result && req.getMode() == DBServerlessMode.WarmUp)
+      poolManagementService.makeDBDown(req.getAlias());
+    else {
+      /* ToDo : Sysmaster 에서도 제거해주어야 함 */
+    }
 
     log.info("{}", res);
     return res;
