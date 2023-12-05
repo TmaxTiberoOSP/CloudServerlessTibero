@@ -67,7 +67,7 @@ public class KubernetesManagementService {
             tbCommand = "tbboot";
         }
         else if (command == DBExecuteCommand.Down)
-            tbCommand = "tbdown";
+            tbCommand = "tbdown immediate";
         else {
             log.info("DB Command : not valid ");
             return false;
