@@ -8,32 +8,32 @@ import lombok.Getter;
 
 @Component
 public class DBInstancePool {
-  @Getter
-  private final ConcurrentHashMap<String, DBInstance> activeDBPool = new ConcurrentHashMap<>();
-  @Getter
-  private final ConcurrentHashMap<String, DBInstance> activeColdDBPool = new ConcurrentHashMap<>();
-  @Getter
-  private final ConcurrentHashMap<String, DBInstance> warmUpDBPool = new ConcurrentHashMap<>();
+    @Getter
+    private final ConcurrentHashMap<String, DBInstance> activeDBPool = new ConcurrentHashMap<>();
+    @Getter
+    private final ConcurrentHashMap<String, DBInstance> activeColdDBPool = new ConcurrentHashMap<>();
+    @Getter
+    private final ConcurrentHashMap<String, DBInstance> warmUpDBPool = new ConcurrentHashMap<>();
 
-  public boolean isExistInDBPool(String alias) {
-    if (activeDBPool.containsKey(alias) ||
-      activeColdDBPool.containsKey(alias) ||
-        warmUpDBPool.containsKey(alias)) {
-      return true;
+    public boolean isExistInDBPool(String alias) {
+        if (activeDBPool.containsKey(alias) ||
+                activeColdDBPool.containsKey(alias) ||
+                warmUpDBPool.containsKey(alias)) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
-    switch (mode) {
-      case Active:
-        return activeDBPool;
-      case ActiveCold:
-        return activeColdDBPool;
-      case WarmUp:
-        return warmUpDBPool;
-      default:
-        return null;
+    public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
+        switch (mode) {
+            case Active:
+                return activeDBPool;
+            case ActiveCold:
+                return activeColdDBPool;
+            case WarmUp:
+                return warmUpDBPool;
+            default:
+                return null;
+        }
     }
-  }
 }
