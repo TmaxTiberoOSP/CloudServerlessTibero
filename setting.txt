@@ -1,0 +1,50 @@
+function go7(){
+    cd /home/donghee/git/tibero7
+    . ./tbenv /home/donghee/git/tibero7
+    export CM_HOME=$TB_HOME
+    setLocale
+}
+
+function java11() {
+    sudo rm -rf /etc/alternatives/java
+    sudo ln -s /usr/lib/jvm/java-11-openjdk-amd64/bin/java /etc/alternatives/java
+    sudo rm -rf /etc/alternatives/javac
+    sudo ln -s /usr/lib/jvm/java-11-openjdk-amd64/bin/javac /etc/alternatives/javac
+    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+    export JRE_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+    PATH=`echo $PATH | tr ':' '\n' | grep -iv jdk | tr '\n' ':' | sed 's/..$//'`
+    export PATH=$PATH:$JRE_HOME/bin:$JAVA_HOME/bin
+}
+
+function stripc() {
+    str=$LD_LIBRARY_PATH
+    last_ch="${str:(-1)}"
+    while [ $last_ch == ':' ]
+    do
+        str=`echo $str | sed 's/.$//'`
+        last_ch="${str:(-1)}"
+    done
+    LD_LIBRARY_PATH=$str
+}
+
+function ossb() {
+    go7
+    java11
+    stripc
+    export SM_HOME=/home/donghee/git/tibero_oss/CloudServerlessTibero
+    rm -rf $SM_HOME/bin/jar/serverless
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/jvm/java-11-openjdk-amd64/lib/server
+    OSS_PATH=/home/donghee/git/tibero_oss/CloudServerlessTibero/serverless-tibero
+    cd $OSS_PATH
+    ./gradlew releaseServerless
+
+    export SM_IP=127.0.0.1
+    export SM_PORT=2424
+    export SYS_MASTER_IP=127.0.0.1
+    export SYS_MASTER_PORT=2525
+}
+
+alias slboot='java -cp .:$SM_HOME/bin/jar/serverless/lib/*:$SM_HOME/bin/jar/serverless/manager/* com.tmax.serverless.manager.Main&'
+alias smcli='java -jar $SM_HOME/bin/jar/serverless/admin/serverless-admin-1.0-runnable.jar'
+alias smp='ps -ef | grep com.tmax.serverless.manager'
+alias smdown='smcli down manager'
