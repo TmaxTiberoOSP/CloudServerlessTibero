@@ -14,29 +14,25 @@ public class DBInstancePool {
   private final ConcurrentHashMap<String, DBInstance> activeColdDBPool = new ConcurrentHashMap<>();
   @Getter
   private final ConcurrentHashMap<String, DBInstance> warmUpDBPool = new ConcurrentHashMap<>();
-//  private boolean isMonitoring = false;
-//  private String monitoringGroupName;
-//  private String monitoringGroupId;
+  public boolean isExistInDBPool(String alias) {
+      if (activeDBPool.containsKey(alias) ||
+            activeColdDBPool.containsKey(alias) ||
+            warmUpDBPool.containsKey(alias)) {
+          return true;
+      }
+      return false;
+  }
 
-    public boolean isExistInDBPool(String alias) {
-        if (activeDBPool.containsKey(alias) ||
-                activeColdDBPool.containsKey(alias) ||
-                warmUpDBPool.containsKey(alias)) {
-            return true;
-        }
-        return false;
-    }
-
-    public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
-        switch (mode) {
-            case Active:
-                return activeDBPool;
-            case ActiveCold:
-                return activeColdDBPool;
-            case WarmUp:
-                return warmUpDBPool;
-            default:
-                return null;
-        }
-    }
+  public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
+      switch (mode) {
+          case Active:
+              return activeDBPool;
+          case ActiveCold:
+              return activeColdDBPool;
+          case WarmUp:
+              return warmUpDBPool;
+          default:
+              return null;
+      }
+  }
 }
