@@ -252,6 +252,9 @@ public class PoolManagementService {
 
     dbInstance = pool.get(alias);
 
+    /*
+    추후 별도의 처리가 가능하도록 아래의 조건문을 남겨두었음.
+     */
     if (kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.StandbyDB) &&
             kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Down)) {
       return true;
