@@ -15,12 +15,8 @@ public class DBInstancePool {
   @Getter
   private final ConcurrentHashMap<String, DBInstance> warmUpDBPool = new ConcurrentHashMap<>();
   public boolean isExistInDBPool(String alias) {
-      if (activeDBPool.containsKey(alias) ||
-            activeColdDBPool.containsKey(alias) ||
-            warmUpDBPool.containsKey(alias)) {
-          return true;
-      }
-      return false;
+      return (activeDBPool.containsKey(alias) || activeColdDBPool.containsKey(alias) ||
+              warmUpDBPool.containsKey(alias));
   }
 
   public ConcurrentHashMap<String, DBInstance> getDBPoolByMode(DBServerlessMode mode) {
