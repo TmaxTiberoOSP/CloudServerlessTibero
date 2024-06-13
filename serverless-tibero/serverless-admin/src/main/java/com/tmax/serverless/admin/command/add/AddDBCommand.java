@@ -69,6 +69,12 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
   private String podName;
 
   @Option(
+          names = {"--nonDeletable"},
+          description = "nonDeletable",
+          required = true)
+  private String nonDeletable;
+
+  @Option(
       names = {"--mode"},
       completionCandidates = DBServerlessModeOption.Candidates.class,
       converter = DBServerlessModeOption.Converter.class,
@@ -76,6 +82,9 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
           + "[${COMPLETION-CANDIDATES}]",
       required = true)
   private DBServerlessMode mode;
+
+  public AddDBCommand() {
+  }
 
   @Override
   public String getServiceName() {
@@ -94,6 +103,7 @@ public class AddDBCommand extends CallableSubCommand<AdminMsgAddDBReply> {
         .dbUser(dbUser)
         .dbPassword(dbPassword)
         .podName(podName)
+        .nonDeletable(nonDeletable)
         .mode(mode)
         .build();
     log.info("req msg: " + req);
