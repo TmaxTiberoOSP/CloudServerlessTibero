@@ -43,6 +43,7 @@ public class PoolManagementService {
     String dbUser = req.getDbUser();
     String dbPassword = req.getDbPassword();
     String podName = req.getPodName();
+    String nonDeletable = req.getNonDeletable();
     DBServerlessMode mode = req.getMode();
 
     Map<String, DBInstance> pool;
@@ -58,6 +59,7 @@ public class PoolManagementService {
         .dbUser(dbUser)
         .dbPassword(dbPassword)
         .podName(podName)
+        .nonDeletable(nonDeletable)
         .mode(mode)
         .build();
 

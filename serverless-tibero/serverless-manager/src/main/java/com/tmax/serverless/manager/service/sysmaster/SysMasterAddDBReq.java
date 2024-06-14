@@ -19,6 +19,7 @@ public class SysMasterAddDBReq {
   private int port;
   private String name;
   private String type;
+  private String nonDeletable;
   private String userDefinedColor;
 
   public JsonObject toJsonBody() {
@@ -31,6 +32,7 @@ public class SysMasterAddDBReq {
     body.addProperty("ip", ip);
     body.addProperty("port", port);
     body.addProperty("name", name);
+    body.addProperty("nonDeletable", nonDeletable);
     body.addProperty("type", type);
     body.addProperty("userDefinedColor", userDefinedColor);
 

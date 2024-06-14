@@ -18,6 +18,7 @@ public class DBInstance {
   private String dbUser;
   private String dbPassword;
   private String podName;
+  private String nonDeletable;
   private DBServerlessMode mode;
 
 }

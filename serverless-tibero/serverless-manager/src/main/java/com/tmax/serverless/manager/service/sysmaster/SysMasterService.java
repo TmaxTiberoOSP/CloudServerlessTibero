@@ -36,6 +36,7 @@ public class SysMasterService {
         .ip(newDB.getIp())
         .port(newDB.getPort())
         .name(newDB.getAlias())
+        .nonDeletable(newDB.getNonDeletable())
         .type(monitoringType)
         .userDefinedColor(monitoringColor)
         .build();
@@ -76,6 +77,7 @@ public class SysMasterService {
         .ip(newDB.getIp())
         .port(newDB.getPort())
         .name(newDB.getAlias())
+        .nonDeletable(newDB.getNonDeletable())
         .type(monitoringType)
         .userDefinedColor(monitoringColor)
         .build();
