@@ -18,8 +18,8 @@ public class SysMasterAddDBReq {
   private String ip;
   private int port;
   private String name;
-  private String type;
   private String nonDeletable;
+  private String type;
   private String userDefinedColor;
 
   public JsonObject toJsonBody() {
