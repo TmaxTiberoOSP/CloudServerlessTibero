@@ -110,10 +110,14 @@ public class PoolManagementService {
     pool = dbInstancePool.getWarmUpDBPool();
     for (Map.Entry<String, DBInstance> entry : pool.entrySet()) {
       monitoringList.add(entry.getValue().getId());
+      /*
+      Dynamic RSB Remastering이 추가됨에 따라 Scale-in/out 과정에서 DB를 켜거나 종료시키지 않는다.
+
       if(!kubernetesManagementService.executeDBCommand(entry.getValue(), DBExecuteCommand.Down)) {
         log.info("WarmUp DB initialize fail : DB Down", entry.getValue().getAlias());
         return false;
       }
+      */
     }
 
     if (!sysMasterService.addGroupToSysMaster(groupName, monitoringList))
@@ -172,8 +176,8 @@ public class PoolManagementService {
        dbInstance = activeColdDBPool.get(alias);
     }
 
-    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.Active)) {
-      if (!moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp ,DBServerlessMode.Active)) {
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold, DBServerlessMode.Active)) {
+      if (!moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp, DBServerlessMode.Active)) {
         log.info("Fail to move DB from WarmUp to Active");
         return false;
       }
@@ -182,10 +186,14 @@ public class PoolManagementService {
       return kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.ActiveDB);
     }
 
+    /*
+    Dynamic RSB Remastering이 추가됨에 따라 Scale-in/out 과정에서 DB를 켜거나 종료시키지 않는다.
+
     if (!kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Boot)) {
       moveDBtoAnotherPool(alias, DBServerlessMode.Active, DBServerlessMode.WarmUp);
       return false;
     }
+    */
 
     /* ToDo : DB Boot 성공하고 LB 등록실패하면? */
     return kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.ActiveDB);
@@ -204,13 +212,13 @@ public class PoolManagementService {
 
     dbInstance = pool.get(alias);
 
-    if (!moveDBtoAnotherPool(alias, DBServerlessMode.Active ,DBServerlessMode.ActiveCold)) {
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.Active, DBServerlessMode.ActiveCold)) {
       log.info("Fail to move DB from Active to ActiveCold");
       return false;
     }
 
     if (!kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.StandbyDB)) {
-      moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.Active);
+      moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold, DBServerlessMode.Active);
       return false;
     }
 
@@ -229,15 +237,19 @@ public class PoolManagementService {
 
     dbInstance = pool.get(alias);
 
-    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold ,DBServerlessMode.WarmUp)) {
+    if (!moveDBtoAnotherPool(alias, DBServerlessMode.ActiveCold, DBServerlessMode.WarmUp)) {
       log.info("Fail to move DB from ActiveCold to WarmUp");
       return false;
     }
+
+    /*
+    Dynamic RSB Remastering이 추가됨에 따라 Scale-in/out 과정에서 DB를 켜거나 종료시키지 않는다.
 
     if (!kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Down)) {
       moveDBtoAnotherPool(alias, DBServerlessMode.WarmUp, DBServerlessMode.ActiveCold);
       return false;
     }
+    */
 
     return true;
   }
@@ -257,11 +269,18 @@ public class PoolManagementService {
     /*
     추후 별도의 처리가 가능하도록 아래의 조건문을 남겨두었음.
      */
+
+    /*
+    Dynamic RSB Remastering이 추가됨에 따라 Scale-in/out 과정에서 DB를 켜거나 종료시키지 않는다.
+
     if (kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.StandbyDB) &&
             kubernetesManagementService.executeDBCommand(dbInstance, DBExecuteCommand.Down)) {
       return true;
     }
 
     return false;
+    */
+
+    return kubernetesManagementService.executeLBCommand(dbInstance, LBExecuteCommand.StandbyDB);
   }
 }
