@@ -75,7 +75,7 @@ public class KubernetesManagementService {
 
         log.info("DB Command : " + tbCommand);
 
-        String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero2", "--", "/bin/bash",
+        String[] cmd = {"kubectl", "exec", "-it", podName, "-n", "tibero3", "--", "/bin/bash",
                 "-c", "export TB_HOME=/tibero;export TB_SID=" + dbInstance.getAlias() + ";" + tbCommand};
         if (executeCommand(cmd))
             log.info ("Success to " + tbCommand + " DB");
@@ -103,7 +103,7 @@ public class KubernetesManagementService {
 
         log.info("LB Command : " + lbCommand);
 
-        String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero2", "app="+lbCommand, "--overwrite"};
+        String[] cmd = {"kubectl", "label", "pod", podName, "-n", "tibero3", "app="+lbCommand, "--overwrite"};
 
         if (executeCommand(cmd))
             log.info ("Success to made " + lbCommand);
